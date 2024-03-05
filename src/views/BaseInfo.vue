@@ -15,7 +15,7 @@
     </el-form-item>
     <el-form-item label="年级：" prop="grade">
       <el-select v-model="form.grade" placeholder="请选择年级" id="grade">
-            <el-option v-for="item in standInfo" :key="item.grade" :label="item.grade" :value="item.grade"></el-option>
+            <el-option v-for="item in standInfos.standInfo.grade" :key="item.id" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="性别：" prop="gender">
@@ -24,22 +24,21 @@
         </el-select>
     </el-form-item>
     <el-form-item label="院系：" prop="department">
-      <el-select v-model="form.department" placeholder="请选择院系" id="department">
-        <el-option v-for="item in standInfo" :key="item.department" :label="item.department" :value="item.department"></el-option>
+      <el-select v-model="form.department" placeholder="请选择院系" @change="select_check" id="department">
+        <el-option v-for="item in departmentList" :key="item.id" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="专业：" prop="major">
-      <el-select v-model="form.major" placeholder="请选择专业"  id="major">
-        <el-option v-for="item in standInfo" :key="item.major" :label="item.major" :value="item.major"></el-option>
+      <el-select v-model="form.major" :placeholder="form.department ? '请选择专业' : '请先选择院系'" :disabled="form.department ? false : true" id="major">
+        <el-option v-for="item in majorList" :key="item.id" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="账号：" prop="username">
       <el-input v-model="form.studentId" placeholder="账号与学号一致" disabled id="username"></el-input>
     </el-form-item>
-    <el-form-item label="密码：" prop="password">
-        <span v-if="modalType === 0" style="color: #aaaaaa; margin-right: 20px;">已设置默认密码</span>
-        <span v-if="modalType === 1" style="color: #aaaaaa; margin-right: 20px;">用户密码不可见</span>
-        <el-button type="danger" @click="resetPassword" id="password">恢复默认</el-button>
+    <el-form-item label="密码：" prop="password" for="password">
+        <el-input :placeholder="modalType === 0 ? '已设置默认密码' : '用户密码不可见'" disabled style="width: 130px; margin-right: 10px;" id="password"></el-input>
+        <el-button v-if="modalType === 1" type="danger" @click="resetPassword">恢复默认</el-button>
     </el-form-item>
   </el-form>
             <span slot="footer" class="dialog-footer">
@@ -135,7 +134,22 @@ export default {
                 password:'123456' // 默认密码
             },
             // 标准信息数据
-            standInfo: [],
+            standInfos: {
+                standInfo: [
+                    {
+                        id:'',
+                        department:'',
+                        major:'',
+                        company_type:'',
+                        province:'',
+                        city:'',
+                        grade:'',
+                        department_major:''
+                    }
+                ]
+            },
+            majorList:[],
+            departmentList:[],
             // 表单验证规则
             rules: {
                 studentId: [
@@ -175,6 +189,7 @@ export default {
             delData: {
                 deleteId: ''
             },
+            // 查找关键词
             userForm: {
                 keyword: ''
             }
@@ -213,9 +228,25 @@ export default {
                 }
             });
         },
+        select_check() {
+            if (this.form.department) {
+                // 用户选择了学院
+                // 学院对应专业（每触发一次清空一次）
+                this.form.major = ''
+                this.majorList = []
+
+                const length = this.standInfos.standInfo.department_major.length
+                for (var i = 0; i < length; i++) {
+                    if (this.form.department == this.standInfos.standInfo.department_major[i]) {
+                        this.majorList.splice(1,0,this.standInfos.standInfo.major[i])
+                    }
+                }
+            }
+        },
         // 实现恢复默认密码
         resetPassword() {
             this.form.password = '123456';
+            this.$message.success('已恢复默认密码，请保存');
         },
         // 手动关闭表单(新增时不重置)
         handleClose() {
@@ -251,7 +282,7 @@ export default {
             this.dialogVisible = true;
             this.form = JSON.parse(JSON.stringify(row));    // 深拷贝
         },
-        // 新增按钮事件
+        // 新增
         handleAdd() {
             this.modalType = 0;
             this.dialogVisible = true;
@@ -259,7 +290,16 @@ export default {
         // 获取标准信息
         getStandardInfo() {
             getStandInfo().then(({ data }) => {
-                this.standInfo = data.data;
+                this.standInfos = data.data;
+                this.standInfos.standInfo.department_major = this.standInfos.standInfo.department
+                
+                // 过滤学院重复
+                const length = this.standInfos.standInfo.department.length
+                for (var i = 0; i < length; i++) {
+                    if (this.standInfos.standInfo.department[i] != this.standInfos.standInfo.department[i+1]) {
+                        this.departmentList.splice(1,0,this.standInfos.standInfo.department[i])
+                    }
+                }
             })
         },
         // 获取当前页用户数据和总人数

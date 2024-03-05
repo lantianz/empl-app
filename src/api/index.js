@@ -1,5 +1,8 @@
 import http from "../utils/request";
 
+export const changePwd = (params) => {
+    return http.put('/api/changePwd', params);
+}
 
 export const getAllUserByPage = (params) => {
     return http.get('/api/graduate/getAllUserByPage', params);
