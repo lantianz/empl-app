@@ -65,6 +65,7 @@
         <div class="common-table">
             <el-table
             stripe
+            border
             height="90%"
             :data="tableData"
             style="width: 100%;">

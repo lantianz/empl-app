@@ -1,6 +1,6 @@
 <template>
     <el-row>
-      <el-col :span="8" style="padding-right: 10px">
+      <el-col id="col8" :span="col_view ? 0 : 8" style="padding-right: 10px">
         <el-card class="box-card">
           <div class="user">
             <img src="../assets/images/user.jpg" alt="">
@@ -15,14 +15,10 @@
           </div>
         </el-card>
         <el-card class="box-card" style="margin-top: 20px; height: 320px;">
-                    <el-table
-            :data="tableData"
-            style="width: 100%;">
-            <el-table-column v-for="(val, key) in tableLabel"  :prop="key" :label="val" :key="key" />
-            </el-table>
+                    
         </el-card>
       </el-col>
-        <el-col :span="16" style="padding-left: 10px">
+        <el-col :span="col_view ? 24 : 16" style="padding-left: 10px">
             <el-card class="box-card" style="margin-bottom: 10px">
                 <div class="notice">
                     <span class="title">公告</span>
@@ -46,49 +42,23 @@ import {  } from '../api'
 export default {
     data() {
         return {
-            tableData: [{
-                name: 'oppo',
-                todayBuy: '100',
-                monthBuy: '300',
-                totalBuy: '800'
-            },
-            {
-                name: 'vivo',
-                todayBuy: '100',
-                monthBuy: '300',
-                totalBuy: '800'
-            },
-            {
-                name: '苹果',
-                todayBuy: '100',
-                monthBuy: '300',
-                totalBuy: '800'
-            },
-            {
-                name: '小米',
-                todayBuy: '100',
-                monthBuy: '300',
-                totalBuy: '800'
-            },
-            {
-                name: '魅族',
-                todayBuy: '100',
-                monthBuy: '300',
-                totalBuy: '800'
-            }],
-            tableLabel: {
-                name: '课程',
-                todayBuy: '今日购买',
-                monthBuy: '本月购买',
-                totalBuy: '总购买'
-            },
+            col_view: false,
             noticeData: [{
                     content:null
                     //content:'这是一大堆公告这是一大堆公告！！'
                 }]
         }
     },
+    methods: {
+        widthGet(){
+            let width = document.getElementById("col8").offsetWidth;
+            if (width < 300){
+                this.col_view = true;
+            }
+        }
+    },
     mounted() {
+        this.widthGet();
     }
 }
 </script>

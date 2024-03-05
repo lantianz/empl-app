@@ -1,12 +1,12 @@
 <template>
-  <el-menu default-active="1-4-1" 
+  <el-menu default-active="2" 
   class="el-menu-vertical-demo" 
   @open="handleOpen" 
   @close="handleClose"
   :collapse="isCollapse"  
   background-color="#545c64"
   text-color="#fff"
-  active-text-color="#ffd04b"
+  active-text-color="#409EFF"
   >
     <h3>{{isCollapse ? '管理':'就业信息管理系统'}}</h3>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.name" :index="item.name">
@@ -26,23 +26,6 @@
   </el-menu>
 </template>
 
-<style lang="less" scoped>
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
-}
-.el-menu {
-  height: 100vh;
-  h3 {
-    color: #fff;
-    text-align: center;
-    line-height: 48px;
-    font-size: 16px;
-    font-weight: 400;
-  }
-}
-</style>
-
 <script>
 export default {
   data() {
@@ -59,101 +42,70 @@ export default {
           path: "/baseinfo",
           name: "baseinfo",
           label: "毕业生基本信息",
-          icon: "s-home",
+          icon: "s-custom",
           url: "BaseInfo/BaseInfo"
         },
         {
           path: "/emplinfo",
           name: "emplinfo",
           label: "毕业生就业信息",
-          icon: "s-home",
+          icon: "s-promotion",
           url: "EmplInfo/EmplInfo"
         },
         {
           path: "/accountallocation",
           name: "accountallocation",
           label: "初始账号分配",
-          icon: "s-home",
+          icon: "s-order",
           url: "AccountAllocation/AccountAllocation"
         },
         {
           path: "/informationpush",
           name: "informationpush",
           label: "就业相关资讯推送",
-          icon: "s-home",
+          icon: "s-comment",
           url: "InformationPush/InformationPush"
         },
         {
           path: "/check",
           name: "check",
           label: "就业信息审核",
-          icon: "s-home",
+          icon: "s-release",
           url: "Check/Check"
         },
         {
           path: "/total",
           name: "total",
           label: "汇总与统计",
-          icon: "s-home",
+          icon: "s-grid",
           url: "Total/Total"
         },
-        // {
-        //   label: "汇总与统计",
-        //   icon: "location",
-        //   children: [
-        //     {
-        //       path: "/emplinfolist",
-        //       name: "emplinfolist",
-        //       label: "就业信息一览表",
-        //       icon: "setting",
-        //       url: "Total/EmplInfoList"
-        //     },
-        //     {
-        //       path: "/emplinfototal",
-        //       name: "emplinfototal",
-        //       label: "就业信息统计表",
-        //       icon: "setting",
-        //       url: "Total/EmplInfoTotal"
-        //     },
-        //     {
-        //       path: "/emplsituation",
-        //       name: "emplsituation",
-        //       label: "就业情况统计表",
-        //       icon: "setting",
-        //       url: "Total/EmplSituation"
-        //     }
-        //   ]
-        // },
         {
           label: "其他",
-          icon: "location",
+          icon: "more",
           children: [
             {
               path: "/user",
               name: "user",
               label: "个人中心",
-              icon: "setting",
               url: "Other/User"
             },
             {
               path: "/setting",
               name: "setting",
               label: "系统设置",
-              icon: "setting",
               url: "Other/Setting"
             },
             {
               path: "/changepwd",
               name: "changepwd",
               label: "修改密码",
-              icon: "setting",
               url: "Other/ChangePwd"
             },
             {
               path: "/logout",
               name: "logout",
               label: "退出登录",
-              icon: "setting",
               url: "Other/Logout"
             }
           ]
@@ -186,14 +138,28 @@ export default {
     hasChildren() {
       return this.menuData.filter(item => item.children);
     },
+    // 是否折叠
     isCollapse() {
       return this.$store.state.tab.isCollapse;
     }
   }
 };
 </script>
+
 <style lang="less" scoped>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
 .el-menu {
   border-right: none;
+  height: 100vh;
+  h3 {
+    color: #fff;
+    text-align: center;
+    line-height: 48px;
+    font-size: 16px;
+    font-weight: 400;
+  }
 }
 </style>
