@@ -11,6 +11,8 @@ import User from '../views/User.vue'
 import Setting from '../views/Setting.vue'
 import ChangePwd from '../views/ChangePwd.vue'
 import Main from '../views/Main.vue'
+import Login from '../views/Login.vue'
+
 Vue.use(VueRouter)
 // 1.创建路由组件
 // 2.将路由与组件进行映射
@@ -34,6 +36,10 @@ const routes = [
             { path: '/setting', component: Setting },
             { path: '/changepwd', component: ChangePwd }
         ]
+    },
+    {
+        path: '/login',
+        component: Login
     }
 ]
 

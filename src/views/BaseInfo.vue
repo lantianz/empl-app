@@ -40,19 +40,18 @@
         <el-input :placeholder="modalType === 0 ? '已设置默认密码' : '用户密码不可见'" disabled style="width: 130px; margin-right: 10px;" id="password"></el-input>
         <el-button v-if="modalType === 1" type="danger" @click="resetPassword">恢复默认</el-button>
     </el-form-item>
-  </el-form>
+        </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
         </el-dialog>
         <div class="manage-header">
-            <el-button type="primary" @click="handleAdd()">
-                + 新增
-            </el-button>
+            <!-- 新增 -->
+            <el-button type="primary" @click="handleAdd()">+ 新增</el-button>
             <h1 style="font-size: 18px; color: #666666;">毕业生基本信息表</h1>
             <!-- 搜索 -->
-            <el-form :inline="true" :model="userForm">
+            <el-form style="margin-top: 20px;" :inline="true" :model="userForm">
                 <el-form-item label="模糊搜索：">
                     <el-input v-model="userForm.keyword" placeholder="请输入学号或姓名查找" id="search"></el-input>
                 </el-form-item>
@@ -61,6 +60,8 @@
                 </el-form-item>
             </el-form>
         </div>
+        <!-- 总数显示 -->
+        <span style="margin-top: 20px;font-size: 14px; color: #999999;">共有数据:{{ total }} 条</span>
         <!-- 用户主体表格 -->
         <div class="common-table">
             <el-table
@@ -68,21 +69,32 @@
             border
             height="90%"
             :data="tableData"
-            style="width: 100%;">
+            style="width: 100%;"
+            :default-sort = "{prop: 'studentId'}">
+                <el-table-column
+                    type="index"
+                    width="80px"
+                    label="本页序号">
+                </el-table-column>
                 <el-table-column
                     prop="studentId"
+                    width="150px"
+                    sortable
                     label="学号">
                 </el-table-column>
                 <el-table-column
                     prop="name"
+                    width="100px"
                     label="姓名">
                 </el-table-column>
                 <el-table-column
                     prop="gender"
+                    width="50px"
                     label="性别">
                 </el-table-column>
                 <el-table-column
                     prop="department"
+                    sortable
                     label="院系">
                 </el-table-column>
                 <el-table-column
@@ -91,10 +103,13 @@
                 </el-table-column>
                 <el-table-column
                     prop="grade"
+                    width="80px"
+                    sortable
                     label="年级">
                 </el-table-column>
                 <el-table-column
                     prop="username"
+                    width="150px"
                     label="账号">
                 </el-table-column>
                 <el-table-column
@@ -111,6 +126,7 @@
                 background
                 layout="prev, pager, next"
                 :total="total"
+                :page-size="pageData.pageSize"
                 @current-change="handlePage">
                 </el-pagination>
             </div>
@@ -184,7 +200,7 @@ export default {
             // 分页
             pageData: {
                 pageNum: 1,
-                pageSize: 10,
+                pageSize: 20, 
             },
             // 要删除的用户ID
             delData: {
@@ -282,6 +298,7 @@ export default {
             this.modalType = 1;
             this.dialogVisible = true;
             this.form = JSON.parse(JSON.stringify(row));    // 深拷贝
+            this.select_check()
         },
         // 新增
         handleAdd() {
@@ -339,7 +356,7 @@ export default {
     .manage-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
     }
     .common-table {
         position: relative;
