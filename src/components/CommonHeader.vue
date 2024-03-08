@@ -7,14 +7,14 @@
             </el-breadcrumb>
         </div>
         <div class="r-content">
-            <el-dropdown>
+            <el-dropdown @command="handleClick">
                   <span class="el-dropdown-link">
                     <img class="user" src="../assets/images/user.jpg" alt="">
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>个人中心</el-dropdown-item>
                     <el-dropdown-item>修改密码</el-dropdown-item>
-                    <el-dropdown-item>退出登录</el-dropdown-item>
+                    <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
         </div>
@@ -22,6 +22,8 @@
 </template>
 <script>
 import {mapState} from 'vuex'
+import {adminLogout} from '../api'
+import Cookie from 'js-cookie'
 export default {
     data() {
         return {
@@ -31,6 +33,15 @@ export default {
     methods: {
         handlemenu() {
             this.$store.commit('collapseMenu')
+        },
+        handleClick(command) {
+            if(command === 'logout') {
+                adminLogout().then(res=>{
+                    localStorage.removeItem('token')
+                    Cookie.remove('menu')
+                    this.$router.push('/login')
+                })
+            }
         }
     },
     computed: {

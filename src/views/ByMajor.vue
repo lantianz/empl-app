@@ -1,5 +1,5 @@
 <template>
-    <h1>ChangePwd</h1>
+    <h1>ByMajor</h1>
 </template>
 <script>
 export default {

@@ -1,15 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import BaseInfo from '../views/BaseInfo.vue'
-import EmplInfo from '../views/EmplInfo.vue'
-import AccountAllocation from '../views/AccountAllocation.vue'
-import InformationPush from '../views/InformationPush.vue'
-import Check from '../views/Check.vue'
-import Total from '../views/Total.vue'
-import User from '../views/User.vue'
-import Setting from '../views/Setting.vue'
-import ChangePwd from '../views/ChangePwd.vue'
 import Main from '../views/Main.vue'
 import Login from '../views/Login.vue'
 
@@ -18,30 +8,34 @@ Vue.use(VueRouter)
 // 2.将路由与组件进行映射
 // 3.创建router实例
 
-const routes = [
-    {
-        path: '/', 
-        component: Main,
-        redirect: '/home',
-        children: [
-            //子路由
-            { path: '/home', component: Home },
-            { path: '/baseinfo', component: BaseInfo },
-            { path: '/emplinfo', component: EmplInfo },
-            { path: '/accountallocation', component: AccountAllocation },
-            { path: '/informationpush', component: InformationPush },
-            { path: '/check', component: Check },
-            { path: '/total', component: Total },
-            { path: '/user', component: User },
-            { path: '/setting', component: Setting },
-            { path: '/changepwd', component: ChangePwd }
-        ]
-    },
-    {
-        path: '/login',
-        component: Login
-    }
-]
+let createRouter = () => new VueRouter ({
+    mode: 'history',
+    routes : [
+        {
+            path: '/', 
+            component: Main,
+            name: 'Main',
+            redirect: '/home',
+            children: []
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
+        // {
+        //     path: '/notfound',
+        //     name: 'NotFound',
+        //     component: NotFound,
+        //     hidden: true
+        // },
+        // {
+        //     path: '*',
+        //     redirect: '/notfound',
+        //     hidden: true
+        // }
+    ]
+})
 
 // 避免重复点击相同路由产生错误
 const originaPush = VueRouter.prototype.push;
@@ -49,7 +43,11 @@ VueRouter.prototype.push = function push(location) {
   return originaPush.call(this, location).catch(err => err)
 }
 
-const router = new VueRouter({
-    routes // (缩写) 相当于 routes: routes
-})
+const router = createRouter()
+
+export function resetRouter() {
+    const newRouter = createRouter()
+    router.matcher = newRouter.matcher // 重置路由
+}
+
 export default router

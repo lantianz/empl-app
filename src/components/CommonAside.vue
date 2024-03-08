@@ -27,98 +27,20 @@
 </template>
 
 <script>
+import Cookie from 'js-cookie';
+
 export default {
   data() {
     return {
-      menuData: [
-        {
-          path: "/",
-          name: "home",
-          label: "首页",
-          icon: "s-home",
-          url: "Home/Home"
-        },
-        {
-          path: "/baseinfo",
-          name: "baseinfo",
-          label: "毕业生基本信息",
-          icon: "s-custom",
-          url: "BaseInfo/BaseInfo"
-        },
-        {
-          path: "/emplinfo",
-          name: "emplinfo",
-          label: "毕业生就业信息",
-          icon: "s-promotion",
-          url: "EmplInfo/EmplInfo"
-        },
-        {
-          path: "/accountallocation",
-          name: "accountallocation",
-          label: "初始账号分配",
-          icon: "s-order",
-          url: "AccountAllocation/AccountAllocation"
-        },
-        {
-          path: "/informationpush",
-          name: "informationpush",
-          label: "就业相关资讯推送",
-          icon: "s-comment",
-          url: "InformationPush/InformationPush"
-        },
-        {
-          path: "/check",
-          name: "check",
-          label: "就业信息审核",
-          icon: "s-release",
-          url: "Check/Check"
-        },
-        {
-          path: "/total",
-          name: "total",
-          label: "汇总与统计",
-          icon: "s-grid",
-          url: "Total/Total"
-        },
-        {
-          label: "其他",
-          icon: "more",
-          children: [
-            {
-              path: "/user",
-              name: "user",
-              label: "个人中心",
-              url: "Other/User"
-            },
-            {
-              path: "/setting",
-              name: "setting",
-              label: "系统设置",
-              url: "Other/Setting"
-            },
-            {
-              path: "/changepwd",
-              name: "changepwd",
-              label: "修改密码",
-              url: "Other/ChangePwd"
-            },
-            {
-              path: "/logout",
-              name: "logout",
-              label: "退出登录",
-              url: "Other/Logout"
-            }
-          ]
-        }
-      ]
+      
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+    handleOpen(key) {
+      // console.log(key, 'open');
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleClose(key) {
+      // console.log(key, 'close');
     },
     // 点击菜单
     clickMenu(item) {
@@ -137,6 +59,9 @@ export default {
     // 有
     hasChildren() {
       return this.menuData.filter(item => item.children);
+    },
+    menuData() {
+      return this.$store.state.tab.menu || JSON.parse(Cookie.get('menu'));
     },
     // 是否折叠
     isCollapse() {

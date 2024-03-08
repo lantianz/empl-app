@@ -1,5 +1,5 @@
 <template>
-    <h1>Total</h1>
+    <h1>By3</h1>
 </template>
 <script>
 export default {

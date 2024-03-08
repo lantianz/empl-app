@@ -1,25 +1,27 @@
 <template>
     <div class="login-container">
-        <el-form :inline="true" ref="form" :model="form" :rules="rules">
+        <el-form :inline="true" ref="form" :model="adminForm" :rules="rules">
             <h3 class="login_title">登 录</h3>
-            <el-form-item label="账 号" prop="username" style="margin-left: 20px;">
-                <el-input v-model="form.username" placeholder="请输入账号"></el-input>
+            <el-form-item label="账 号" prop="username">
+                <el-input class="form_block" v-model="adminForm.username" placeholder="请输入账号" id="username"></el-input>
             </el-form-item>
-            <el-form-item label="密 码" prop="password" style="margin-left: 20px;">
-                <el-input type="password" v-model="form.password" placeholder="请输入密码" show-password></el-input>
+            <el-form-item label="密 码" prop="password">
+                <el-input class="form_block" type="password" v-model="adminForm.password" placeholder="请输入密码" id="password" show-password></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="login" style="margin-left: 125px;">登 录</el-button>
+                <el-button type="primary" @click="login" style="">登 录</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
+import { adminLogin, getMenu } from '../api'
+import Cookie from 'js-cookie'
 export default {
     data() {
         return {
-            form: {
+            adminForm: {
                 username: '',
                 password: ''
             },
@@ -36,20 +38,31 @@ export default {
         };
     },
     methods: {
+        // 登录按钮点击事件
         login() {
-            this.$refs.form.validate(valid => {
+            this.$refs.form.validate((valid) => {
                 if (valid) {
-                    // 这里你可以添加你的登录逻辑，现在我们只是模拟一个成功登录
-                    if (this.form.username === 'admin' && this.form.password === 'password') {
-                        this.loginSuccess = true;
-                    } else {
-                        this.loginSuccess = false;
-                    }
-                    this.dialogVisible = true;
-                } else {
-                    return false;
+                    adminLogin (this.adminForm).then(res => {
+                        if (res.data.code === 20000) {
+                            const token = res.data.data.token;
+                            // 将token存入
+                            localStorage.setItem('token', token);
+                            this.$message.success('登录成功');
+                            getMenu(res.data.data.info.role.roleId).then(({data}) => {
+                                const menu = data;
+                                // 获取菜单数据以及路由，存入store，存入Cookie
+                                console.log(menu,'菜单数据')
+                                Cookie.set('menu', JSON.stringify(menu));
+                                this.$store.commit('activeMenu', this.$router)
+                            })
+                            this.$router.push('/home');
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
                 }
-            });
+            })
+            
         }
     }
 };
@@ -70,6 +83,17 @@ export default {
         margin-bottom: 40px;
         color: #505458;
     }
+    .el-form-item {
+        margin-left: 20px;
+        .el-input {
+        width: 210px;
+        }
+        .el-button {
+            width: 210px;
+            margin-left: 55px;
+        }
+    }
+    
 }
 
 </style>
