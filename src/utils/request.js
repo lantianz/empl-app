@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookie from "js-cookie";
 
 
 const http = axios.create({
@@ -11,7 +10,6 @@ const http = axios.create({
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {
     // 在发送请求之前将token放入请求头
-    //const token = Cookie.get('menu');
     const token = localStorage.getItem('token');
     if (token) {
         config.headers['A-Token'] = token;

@@ -4,9 +4,9 @@
   @open="handleOpen" 
   @close="handleClose"
   :collapse="isCollapse"  
-  background-color="#545c64"
-  text-color="#fff"
-  active-text-color="#409EFF"
+  background-color="#fff"
+  text-color="#333333"
+  active-text-color="#aadd99"
   >
     <h3>{{isCollapse ? '管理':'就业信息管理系统'}}</h3>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.name" :index="item.name">
@@ -27,8 +27,6 @@
 </template>
 
 <script>
-import Cookie from 'js-cookie';
-
 export default {
   data() {
     return {
@@ -61,7 +59,7 @@ export default {
       return this.menuData.filter(item => item.children);
     },
     menuData() {
-      return this.$store.state.tab.menu || JSON.parse(Cookie.get('menu'));
+      return this.$store.state.tab.menu || JSON.parse(localStorage.getItem('menu'));
     },
     // 是否折叠
     isCollapse() {
@@ -80,11 +78,11 @@ export default {
   border-right: none;
   height: 100vh;
   h3 {
-    color: #fff;
+    color: #666666;
     text-align: center;
     line-height: 48px;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 800;
   }
 }
 </style>

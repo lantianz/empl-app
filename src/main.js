@@ -26,6 +26,6 @@ new Vue({
   store,
   render: (h) => h(App),
   created() {
-    store.commit("activeMenu", router);
-  },
+    store.commit("activeMenu", router)
+  }
 }).$mount("#app");

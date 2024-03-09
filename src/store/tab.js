@@ -1,18 +1,8 @@
-import Cookie from "js-cookie"
-import { resetRouter } from "@/router"
 
 export default {
     state: {
         isCollapse: false, // 控制菜单的展开和收起
-        tabsList: [
-            {
-                path: '/',
-                name: 'home',
-                label: '首页',
-                icon: 's-home',
-                url: 'Home/Home'
-            }
-        ], 
+        tabsList: [], 
         menu: [] // 存储菜单栏的内容
     },
     mutations: {
@@ -31,14 +21,19 @@ export default {
         // 动态注册menu路由
         activeMenu(state, router) {
             // 本地缓存无数据则无法进行注册
-            if (!Cookie.get('menu')) return 
-            resetRouter()
-            const menu = JSON.parse(Cookie.get('menu'))
-            // console.log(state.menu,'state.menu')
+            if (!localStorage.getItem('menu')) return 
+            const menu = JSON.parse(localStorage.getItem('menu'))
+            const page404 = [
+                {
+                    path: '*',
+                    redirect: '/notfound',
+                    hidden: true
+                }
+            ]
             state.menu = menu
             const menuArray = []
             menu.forEach(item => {
-                // 有子菜单
+                // 有无子菜单
                 if (item.children) {
                     item.children = item.children.map(item => {
                         item.component = () => import(`../views/${item.url}`)
@@ -53,6 +48,9 @@ export default {
             // 添加路由
             menuArray.forEach(item => {
                 router.addRoute('Main', item)
+            })
+            page404.forEach(item => {
+                router.addRoute(item)
             })
         }
 

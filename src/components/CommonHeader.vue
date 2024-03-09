@@ -7,6 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="r-content">
+            <span>????</span>
             <el-dropdown @command="handleClick">
                   <span class="el-dropdown-link">
                     <img class="user" src="../assets/images/user.jpg" alt="">
@@ -23,7 +24,6 @@
 <script>
 import {mapState} from 'vuex'
 import {adminLogout} from '../api'
-import Cookie from 'js-cookie'
 export default {
     data() {
         return {
@@ -37,8 +37,9 @@ export default {
         handleClick(command) {
             if(command === 'logout') {
                 adminLogout().then(res=>{
-                    localStorage.removeItem('token')
-                    Cookie.remove('menu')
+                    // localStorage.removeItem('token')
+                    // localStorage.removeItem('menu')
+                    localStorage.clear()
                     this.$router.push('/login')
                 })
             }
@@ -47,19 +48,47 @@ export default {
     computed: {
         ...mapState({
             tags: state => state.tab.tabsList
-        })
+        }),
+        adminInfo() {
+            console.log(this.$store.state.admin.info.name)
+            return this.$store.state.admin.info || JSON.parse(localStorage.getItem('info'));
+        }
     }
 }
 </script>
 <style lang="less" scoped>
+.el-button {
+    border: 2px solid #eeeeee;
+    border-radius: 8px;
+
+    &:hover {
+        color: #ccc;
+    }
+    &:focus {
+        color: #aadd99;
+        background-color: #fff;
+    }
+}
+
+.el-button--primary {
+    color: #fff;
+    background-color: #aadd99;
+
+    &:hover {
+        background-color: #99cc88;
+    }
+}
 .header-container {
     padding: 0 20px;
-    background-color: #454750;
+    background-color: #fff;
     height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-left: 3px solid #eee;
     .r-content {
+        display: flex;
+        align-items: center;
         .user {
             width: 40px;
             height: 40px;
@@ -70,15 +99,9 @@ export default {
         display: flex;
         align-items: center;
         ::v-deep .el-breadcrumb__item { //样式穿透
-            .el-breadcrumb__inner {
-                font-weight: normal;
-                &.is-link {
-                    color: #666;
-                }
-            }
             &:last-child {
                 .el-breadcrumb__inner {
-                    color: #fff;
+                    color: #333333;
                 }
             }
         }

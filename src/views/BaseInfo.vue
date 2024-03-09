@@ -1,6 +1,7 @@
 <template>
     <div class="manage">
-        <el-dialog title="新增" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="50%"
+            :before-close="handleClose">
             <!-- 用户表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
                 <el-form-item label="学号：" prop="studentId">
@@ -61,8 +62,6 @@
                 </el-form-item>
             </el-form>
         </div>
-        <!-- 总数显示 -->
-        <span style="margin-top: 20px;font-size: 14px; color: #999999;">共有数据:{{ total }} 条</span>
         <!-- 用户主体表格 -->
         <div class="common-table">
             <el-table stripe border height="90%" :data="tableData" style="width: 100%;"
@@ -91,8 +90,9 @@
                 </el-table-column>
             </el-table>
             <div class="pager">
-                <el-pagination background layout="prev, pager, next" :total="total" :page-size="pageData.pageSize"
-                    @current-change="handlePage">
+                <el-button @click="showAll" type="primary" size="mini" style="margin-right: 20px;">显示全部</el-button>
+                <el-pagination @current-change="handlePage" background :page-size="pageData.pageSize"
+                    layout="total, prev, pager, next" :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -297,6 +297,11 @@ export default {
                 this.tableData = data.data;
             })
         },
+        showAll(){
+            console.log('hhhh')
+            this.userForm.keyword = '';
+            this.getSearchList();
+        },
         // 选择页码
         handlePage(val) {
             this.pageData.pageNum = val;
@@ -314,23 +319,56 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.el-button {
+    border: 2px solid #eeeeee;
+    border-radius: 8px;
+
+    &:hover {
+        color: #ccc;
+    }
+}
+
+.el-button--primary {
+    color: #fff;
+    background-color: #aadd99;
+
+    &:hover {
+        background-color: #99cc88;
+    }
+}
+
+
+
 .manage {
-    height: 90%;
+    height: 93%;
 
     .manage-header {
+        background-color: #fff;
+        border-radius: 8px;
+        padding-left: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .common-table {
+        background-color: #fff;
+        border-radius: 8px;
+        margin-top: 20px;
         position: relative;
         height: calc(100% - 62px);
 
         .pager {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
             position: absolute;
-            bottom: 0;
-            right: 20px;
+            bottom: 10px;
+            padding-right: 20px;
+            ::v-deep li:not(.disabled).active {
+                background-color: #aadd99;
+            }
+            
         }
     }
 }

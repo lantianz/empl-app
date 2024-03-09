@@ -7,9 +7,6 @@ export const adminLogin = (data) => {
 export const getMenu = (roleId) => {
     return http.post(`/api/permission/getMenu/${roleId}`);
 }
-export const changePwd = (params) => {
-    return http.put('/api/', params);   // 没做
-}
 export const adminLogout = (params) => {
     return http.post('/api/admin/logout', params);
 }

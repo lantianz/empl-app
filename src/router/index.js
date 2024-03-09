@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from '../views/Main.vue'
 import Login from '../views/Login.vue'
+import NotFound from '../views/NotFound.vue'
+
 
 Vue.use(VueRouter)
 // 1.创建路由组件
@@ -15,7 +17,7 @@ let createRouter = () => new VueRouter ({
             path: '/', 
             component: Main,
             name: 'Main',
-            redirect: '/home',
+            redirect: '/login',
             children: []
         },
         {
@@ -23,17 +25,12 @@ let createRouter = () => new VueRouter ({
             name: 'login',
             component: Login
         },
-        // {
-        //     path: '/notfound',
-        //     name: 'NotFound',
-        //     component: NotFound,
-        //     hidden: true
-        // },
-        // {
-        //     path: '*',
-        //     redirect: '/notfound',
-        //     hidden: true
-        // }
+        {
+            path: '/notfound',
+            name: 'NotFound',
+            component: NotFound,
+            hidden: true
+        }
     ]
 })
 
