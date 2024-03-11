@@ -1,49 +1,57 @@
 <template>
     <div class="manage">
-        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="50%"
+        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="750px"
             :before-close="handleClose">
             <!-- 用户表单信息 -->
-            <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
+            <el-form class="form-user" ref="form" :rules="rules" :inline="true" :model="form" label-width="140px">
                 <el-form-item label="学号：" prop="studentId">
                     <el-input placeholder="请输入学号" v-model="form.studentId" :disabled="modalType === 1"
                         id="studentId"></el-input>
                 </el-form-item>
-                <el-form-item label="姓名：" prop="name">
-                    <el-input placeholder="请输入姓名" v-model="form.name" id="name"></el-input>
+                <el-form-item label="读研：" prop="postgraduate">
+                    <el-radio-group v-model="form.postgraduate">
+                        <el-radio v-for="item in ['是', '否']" :key="item" :label="item"></el-radio>
+                    </el-radio-group>
                 </el-form-item>
-                <el-form-item label="年级：" prop="grade">
-                    <el-select v-model="form.grade" placeholder="请选择年级" id="grade">
-                        <el-option v-for="item in standInfos.standInfo.grade" :key="item.id" :label="item"
+                <el-form-item label="按时就业：" prop="emplOntime">
+                    <el-radio-group v-model="form.emplOntime">
+                        <el-radio v-for="item in ['是', '否']" :key="item" :label="item"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item style="margin-left: 95px" label="毕业两年内就业：" prop="emplWithintwo">
+                    <el-radio-group v-model="form.emplWithintwo">
+                        <el-radio v-for="item in ['是', '否']" :key="item" :label="item"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="签约单位全称：" prop="companyName">
+                    <el-input placeholder="请输入签约单位全称" v-model="form.companyName" id="companyName"></el-input>
+                </el-form-item>
+                <el-form-item label="签约单位类别：" prop="companyType">
+                    <el-select v-model="form.companyType" placeholder="请选择签约单位类别" id="companyType">
+                        <el-option v-for="item in standInfos.standInfo.company_type" :key="item.id" :label="item"
                             :value="item"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="性别：" prop="gender">
-                    <el-select v-model="form.gender" placeholder="请选择性别" id="gender">
-                        <el-option v-for="item in ['男', '女']" :key="item" :label="item" :value="item"></el-option>
+                <el-form-item label="签约单位所在省：" prop="companyProvince">
+                    <el-select v-model="form.companyProvince" placeholder="请选择签约单位所在省" @change="select_check"
+                        id="companyProvince">
+                        <el-option v-for="item in provinceList" :key="item.id" :label="item" :value="item"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="院系：" prop="department">
-                    <el-select v-model="form.department" placeholder="请选择院系" @change="select_check" id="department">
-                        <el-option v-for="item in departmentList" :key="item.id" :label="item"
-                            :value="item"></el-option>
+                <el-form-item label="签约单位所在市：" prop="companyCity">
+                    <el-select v-model="form.companyCity"
+                        :placeholder="form.companyProvince ? '请选择签约单位所在市' : '请先选择签约单位所在省'"
+                        :disabled="form.companyProvince ? false : true" id="companyCity">
+                        <el-option v-for="item in cityList" :key="item.id" :label="item" :value="item"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="专业：" prop="major">
-                    <el-select v-model="form.major" :placeholder="form.department ? '请选择专业' : '请先选择院系'"
-                        :disabled="form.department ? false : true" id="major">
-                        <el-option v-for="item in majorList" :key="item.id" :label="item" :value="item"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="账号：" prop="username">
-                    <el-input v-model="form.studentId" placeholder="账号与学号一致" disabled id="username"></el-input>
-                </el-form-item>
-                <el-form-item label="密码：" prop="password" for="password">
-                    <el-input :placeholder="modalType === 0 ? '已设置默认密码' : '用户密码不可见'" disabled
-                        style="width: 130px; margin-right: 10px;" id="password"></el-input>
-                    <el-button v-if="modalType === 1" type="danger" @click="resetPassword">恢复默认</el-button>
+                <el-form-item label="签约日期：" prop="signDate">
+                    <el-date-picker v-model="form.signDate" type="date" placeholder="请选择签约日期" id="signDate">
+                    </el-date-picker>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
+                <el-button style="margin-right: 30px" v-if="modalType === 0" @click="resetForm">清空</el-button>
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
@@ -55,34 +63,41 @@
             <!-- 搜索 -->
             <el-form style="margin-top: 20px;" :inline="true" :model="userForm">
                 <el-form-item label="模糊搜索：">
-                    <el-input v-model="userForm.keyword" placeholder="请输入学号或姓名查找" id="search"></el-input>
+                    <el-input v-model="userForm.keyword" placeholder="请输入学号或单位名称查找" id="search"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查找</el-button>
+                    <el-button type="primary" @click="backList">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
-        <!-- 用户主体表格 -->
         <div class="common-table">
-            <el-table stripe border height="90%" :data="tableData" style="width: 100%;"
+            <!-- 用户主体表格 -->
+            <el-table stripe border height="90%" ref="multipleTable" :data="tableData" style="width: 100%;"
                 :default-sort="{ prop: 'studentId' }">
+                <el-table-column type="selection" width="40px">
+                </el-table-column>
                 <el-table-column type="index" width="80px" label="本页序号">
                 </el-table-column>
-                <el-table-column prop="studentId" width="150px" sortable label="学号">
+                <el-table-column prop="studentId" sortable label="学号">
                 </el-table-column>
-                <el-table-column prop="name" width="100px" label="姓名">
+                <el-table-column prop="companyName" label="签约单位全称">
                 </el-table-column>
-                <el-table-column prop="gender" width="50px" label="性别">
+                <el-table-column prop="companyType" label="签约单位类别">
                 </el-table-column>
-                <el-table-column prop="department" sortable label="院系">
+                <el-table-column prop="companyProvince" width="120px" label="签约单位所在省">
                 </el-table-column>
-                <el-table-column prop="major" label="专业">
+                <el-table-column prop="companyCity" width="120px" label="签约单位所在市">
                 </el-table-column>
-                <el-table-column prop="grade" width="80px" sortable label="年级">
+                <el-table-column prop="signDate" width="105px" sortable label="签约日期">
                 </el-table-column>
-                <el-table-column prop="username" width="150px" label="账号">
+                <el-table-column prop="postgraduate" width="50px" label="读研">
                 </el-table-column>
-                <el-table-column prop="" label="操作">
+                <el-table-column prop="emplOntime" width="80px" label="按时就业">
+                </el-table-column>
+                <el-table-column prop="emplWithintwo" width="120px" label="毕业两年内就业">
+                </el-table-column>
+                <el-table-column fixed="right" prop="" width="150px" label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -90,7 +105,13 @@
                 </el-table-column>
             </el-table>
             <div class="pager">
-                <el-button @click="showAll" type="primary" size="mini" style="margin-right: 20px;">显示全部</el-button>
+                <el-button @click="toggleSelection(tableData)" type="primary" size="mini" style="margin-right: 10px;">全选
+                    /
+                    反选</el-button>
+                <el-button @click="toggleSelection()" type="primary" size="mini"
+                    style="margin-right: 10px;">取消选择</el-button>
+                <el-button @click="removeAll()" type="danger" size="mini" style="margin-right: 10px;">批量删除</el-button>
+                <el-button @click="showAll" type="primary" size="mini" style="margin-right: 10px;">显示全部</el-button>
                 <el-pagination @current-change="handlePage" background :page-size="pageData.pageSize"
                     layout="total, prev, pager, next" :total="total">
                 </el-pagination>
@@ -99,21 +120,22 @@
     </div>
 </template>
 <script>
-import { getAllUserByPage, getUserBySearch, getStandInfo, addUser, editUser, deleteUser } from '../api'
+import { getAllEmplInfoByPage, getEmplInfoBySearch, getStandInfo, addEmplInfo, editEmplInfo, deleteEmplInfo, deleteAllEmplInfo } from '../api'
 export default {
     data() {
         return {
             dialogVisible: false,
-            // 用户表单信息学号、姓名、性别、院系、专业、年级、账号、密码
+            // 用户表单信息
             form: {
                 studentId: '',
-                name: '',
-                gender: '',
-                department: '',
-                major: '',
-                grade: '',
-                username: '',
-                password: '123456' // 默认密码
+                companyName: '',
+                companyType: '',
+                companyProvince: '',
+                companyCity: '',
+                signDate: '',
+                postgraduate: '',
+                emplOntime: '',
+                emplWithintwo: ''
             },
             // 标准信息数据
             standInfos: {
@@ -126,37 +148,42 @@ export default {
                         province: '',
                         city: '',
                         grade: '',
-                        department_major: ''
+                        department_major: '',
+                        province_city: ''
                     }
                 ]
             },
-            majorList: [],
-            departmentList: [],
+            // 筛选后的省市列表
+            provinceList: [],
+            cityList: [],
             // 表单验证规则
             rules: {
                 studentId: [
                     { required: true, message: '请输入学号' }
                 ],
-                name: [
-                    { required: true, message: '请输入姓名' }
+                companyName: [
+                    { required: true, message: '请输入单位全称' }
                 ],
-                gender: [
-                    { required: true, message: '请选择性别' }
+                companyType: [
+                    { required: true, message: '请选择单位类别' }
                 ],
-                department: [
-                    { required: true, message: '请选择院系' }
+                companyProvince: [
+                    { required: true, message: '请选择单位所在省份' }
                 ],
-                major: [
-                    { required: true, message: '请选择专业' }
+                companyCity: [
+                    { required: true, message: '请选择单位所在市' }
                 ],
-                grade: [
-                    { required: true, message: '请选择年级' }
+                signDate: [
+                    { required: true, message: '请选择签约日期' }
                 ],
-                username: [
-                    { required: false, message: '请输入账号' }
+                postgraduate: [
+                    { required: true, message: '请选择是否读研' }
                 ],
-                password: [
-                    { required: false, message: '请输入密码' }
+                emplOntime: [
+                    { required: true, message: '请选择是否就业' }
+                ],
+                emplWithintwo: [
+                    { required: true, message: '请选择是否两年内就业' }
                 ]
             },
             tableData: [],
@@ -178,27 +205,41 @@ export default {
         }
     },
     methods: {
+        // 重置表单
+        resetForm() {
+            this.form = {
+                studentId: '',
+                companyName: '',
+                companyType: '',
+                companyProvince: '',
+                companyCity: '',
+                signDate: '',
+                postgraduate: '',
+                emplOntime: '',
+                emplWithintwo: ''
+            }
+            this.$message.success('已清空表单');
+        },
         // 提交表单
         submit() {
-            this.form.username = this.form.studentId;
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     // 提交表单的逻辑
                     if (this.modalType === 0) {
                         // 添加操作
-                        addUser(this.form).then((response) => {
+                        addEmplInfo(this.form).then((response) => {
                             if (response.data.code === 20000) {
-                                this.getAllUserByPageList();
+                                this.getAllEmplInfoByPageList();
                                 this.$message.success('添加成功');
                             } else {
-                                this.$message.warning('添加失败，该账户已存在');
+                                this.$message.warning('添加失败，已存在');
                             }
 
                         })
                     } else {
                         // 编辑操作
-                        editUser(this.form).then(() => {
-                            this.getAllUserByPageList();
+                        editEmplInfo(this.form).then(() => {
+                            this.getAllEmplInfoByPageList();
                             this.$message.success('更新成功');
                         })
                     }
@@ -210,24 +251,19 @@ export default {
             });
         },
         select_check() {
-            if (this.form.department) {
-                // 用户选择了学院
-                // 学院对应专业（每触发一次清空一次）
-                this.form.major = ''
-                this.majorList = []
+            if (this.form.companyProvince) {
+                // 用户选择了省
+                // 省对应市（每触发一次清空一次）
+                this.form.companyCity = ''
+                this.cityList = []
 
-                const length = this.standInfos.standInfo.department_major.length
+                const length = this.standInfos.standInfo.province_city.length
                 for (var i = 0; i < length; i++) {
-                    if (this.form.department == this.standInfos.standInfo.department_major[i]) {
-                        this.majorList.splice(1, 0, this.standInfos.standInfo.major[i])
+                    if (this.form.companyProvince == this.standInfos.standInfo.province_city[i]) {
+                        this.cityList.splice(1, 0, this.standInfos.standInfo.city[i])
                     }
                 }
             }
-        },
-        // 实现恢复默认密码
-        resetPassword() {
-            this.form.password = '123456';
-            this.$message.success('已恢复默认密码，请保存');
         },
         // 手动关闭表单(新增时不重置)
         handleClose() {
@@ -238,7 +274,7 @@ export default {
         },
         // 取消时重置表单
         cancel() {
-            this.$refs.form.resetFields();
+            this.$refs.form.resetFields()
             this.dialogVisible = false;
         },
         // 删除
@@ -249,9 +285,9 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.delData.deleteId = row.studentId;
-                deleteUser(row.studentId).then(() => {
+                deleteEmplInfo(row.studentId).then(() => {
                     this.$message.success('删除成功');
-                    this.getAllUserByPageList();
+                    this.getAllEmplInfoByPageList();
                 })
             }).catch(() => {
                 this.$message.info('已取消删除');
@@ -262,7 +298,8 @@ export default {
             this.modalType = 1;
             this.dialogVisible = true;
             this.form = JSON.parse(JSON.stringify(row));    // 深拷贝
-            this.select_check()
+            this.select_check();
+            this.form = JSON.parse(JSON.stringify(row));
         },
         // 新增
         handleAdd() {
@@ -273,47 +310,105 @@ export default {
         getStandardInfo() {
             getStandInfo().then(({ data }) => {
                 this.standInfos = data.data;
-                this.standInfos.standInfo.department_major = this.standInfos.standInfo.department
+                this.standInfos.standInfo.province_city = this.standInfos.standInfo.province
 
-                // 过滤学院重复
-                const length = this.standInfos.standInfo.department.length
+                // 过滤省份重复
+                const length = this.standInfos.standInfo.province.length
                 for (var i = 0; i < length; i++) {
-                    if (this.standInfos.standInfo.department[i] != this.standInfos.standInfo.department[i + 1]) {
-                        this.departmentList.splice(1, 0, this.standInfos.standInfo.department[i])
+                    if (this.standInfos.standInfo.province[i] != this.standInfos.standInfo.province[i + 1]) {
+                        this.provinceList.splice(1, 0, this.standInfos.standInfo.province[i])
                     }
                 }
             })
         },
         // 获取当前页用户数据和总人数
-        getAllUserByPageList() {
-            getAllUserByPage({ params: this.pageData }).then(({ data }) => {
+        getAllEmplInfoByPageList() {
+            getAllEmplInfoByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;    // 分页才是data1
                 this.total = data.total;
+                this.pageData.pageSize = 20;    // 恢复默认页面大小
             })
         },
         // 查找
         getSearchList() {
-            getUserBySearch({ params: this.userForm }).then(({ data }) => {
+            if (this.userForm.keyword == '') {
+                this.$message.error('请输入关键字');
+                return;
+            }
+            getEmplInfoBySearch({ params: this.userForm }).then(({ data }) => {
                 this.tableData = data.data;
+                this.total = data.total;
+                this.pageData.pageSize = this.total;    // 结果显示在一页
+                this.$message.success('共搜索到' + data.total + '条结果');
             })
         },
-        showAll(){
-            console.log('hhhh')
+        // 返回
+        backList() {
+            this.getAllEmplInfoByPageList()
+            this.$message.success('已返回原列表');
+        },
+        // 选择、全选框
+        toggleSelection(rows) {
+            if (rows) {
+                rows.forEach(row => {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                });
+            } else {
+                this.$refs.multipleTable.clearSelection();
+            }
+        },
+        // 显示全部
+        showAll() {
             this.userForm.keyword = '';
-            this.getSearchList();
+            getEmplInfoBySearch({ params: this.userForm }).then(({ data }) => {
+                this.tableData = data.data;
+                this.total = data.total;
+                this.pageData.pageNum = 1;  // 结果显示在一页
+                this.pageData.pageSize = this.total;
+            })
+            this.$message.success('已在本页显示全部数据');
         },
         // 选择页码
         handlePage(val) {
             this.pageData.pageNum = val;
-            this.getAllUserByPageList();
+            this.getAllEmplInfoByPageList();
         },
         // 查找按钮
         onSubmit() {
             this.getSearchList();
+        },
+        // 批量删除
+        removeAll() {
+            // 获取被选中的项
+            let selectedRows = this.$refs.multipleTable.selection;
+            if (selectedRows.length === 0) {
+                this.$message.warning('请先选择要删除的项');
+                return;
+            }
+
+            // 弹出确认框
+            this.$confirm('确定要删除选中的' + selectedRows.length + '条信息吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // 构造要删除的用户ID数组
+                let deleteIds = selectedRows.map(row => row.studentId);
+                // 发送删除请求
+                deleteAllEmplInfo(deleteIds).then(() => {
+                    this.$message.success('批量删除成功');
+                    // 重新加载数据
+                    this.getAllEmplInfoByPageList();
+                }).catch(() => {
+                    this.$message.error('批量删除失败');
+                });
+            }).catch(() => {
+                this.$message.info('已取消批量删除');
+            });
         }
     },
     mounted() {
-        this.getAllUserByPageList();
+        this.getAllEmplInfoByPageList();
         this.getStandardInfo();
     }
 }
@@ -337,7 +432,13 @@ export default {
     }
 }
 
+.el-input {
+    width: 200px;
+}
 
+.el-select {
+    width: 200px;
+}
 
 .manage {
     height: 93%;
@@ -352,23 +453,43 @@ export default {
     }
 
     .common-table {
+        display: flex;
+        justify-content: flex-end;
         background-color: #fff;
         border-radius: 8px;
         margin-top: 20px;
         position: relative;
         height: calc(100% - 62px);
 
+        ::v-deep .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+            background-color: #aadd99;
+            border-color: #aadd99;
+        }
+
+        ::v-deep .el-checkbox__input.is-checked .el-checkbox__inner {
+            background-color: #aadd99;
+            border-color: #aadd99;
+        }
+
+        ::v-deep .el-checkbox__input.is-focus .el-checkbox__inner {
+            border-color: #aadd99;
+        }
+
+        ::v-deep .el-checkbox__input:hover .el-checkbox__inner {
+            border-color: #aadd99;
+        }
+
         .pager {
             display: flex;
-            justify-content: flex-end;
-            width: 100%;
+            align-items: flex-end;
             position: absolute;
             bottom: 10px;
             padding-right: 20px;
+
             ::v-deep li:not(.disabled).active {
                 background-color: #aadd99;
             }
-            
+
         }
     }
 }

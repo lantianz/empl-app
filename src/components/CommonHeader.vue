@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="r-content">
-            <span>????</span>
+            <span class="r-content-name">欢迎工号 {{ adminInfo.jobId }} {{ adminInfo.name }} 使用该系统</span>
             <el-dropdown @command="handleClick">
                   <span class="el-dropdown-link">
                     <img class="user" src="../assets/images/user.jpg" alt="">
@@ -50,7 +50,6 @@ export default {
             tags: state => state.tab.tabsList
         }),
         adminInfo() {
-            console.log(this.$store.state.admin.info.name)
             return this.$store.state.admin.info || JSON.parse(localStorage.getItem('info'));
         }
     }
@@ -86,15 +85,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     border-left: 3px solid #eee;
-    .r-content {
-        display: flex;
-        align-items: center;
-        .user {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-    }
     .l-content {
         display: flex;
         align-items: center;
@@ -104,6 +94,20 @@ export default {
                     color: #333333;
                 }
             }
+        }
+    }
+    .r-content {
+        display: flex;
+        align-items: center;
+        .r-content-name {
+            color: #666666;
+            font-size: 14px;
+            margin-right: 30px;
+        }
+        .user {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
     }
 }

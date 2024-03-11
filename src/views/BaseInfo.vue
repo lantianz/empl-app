@@ -1,6 +1,6 @@
 <template>
     <div class="manage">
-        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="50%"
+        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="700px"
             :before-close="handleClose">
             <!-- 用户表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
@@ -40,10 +40,11 @@
                 <el-form-item label="密码：" prop="password" for="password">
                     <el-input :placeholder="modalType === 0 ? '已设置默认密码' : '用户密码不可见'" disabled
                         style="width: 130px; margin-right: 10px;" id="password"></el-input>
-                    <el-button v-if="modalType === 1" type="danger" @click="resetPassword">恢复默认</el-button>
+                    <el-button v-if="modalType === 1" type="danger" size="mini" @click="resetPassword">恢复默认</el-button>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
+                <el-button style="margin-right: 30px" v-if="modalType === 0" @click="resetForm">清空</el-button>
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
@@ -59,6 +60,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查找</el-button>
+                    <el-button type="primary" @click="backList">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -68,7 +70,7 @@
                 :default-sort="{ prop: 'studentId' }">
                 <el-table-column type="index" width="80px" label="本页序号">
                 </el-table-column>
-                <el-table-column prop="studentId" width="150px" sortable label="学号">
+                <el-table-column prop="studentId" sortable label="学号">
                 </el-table-column>
                 <el-table-column prop="name" width="100px" label="姓名">
                 </el-table-column>
@@ -80,9 +82,12 @@
                 </el-table-column>
                 <el-table-column prop="grade" width="80px" sortable label="年级">
                 </el-table-column>
-                <el-table-column prop="username" width="150px" label="账号">
+                <el-table-column prop="username" label="账号">
                 </el-table-column>
-                <el-table-column prop="" label="操作">
+                <el-table-column prop="" label="密码">
+                    ******
+                </el-table-column>
+                <el-table-column fixed="right" prop="" width="150px" label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -99,7 +104,7 @@
     </div>
 </template>
 <script>
-import { getAllUserByPage, getUserBySearch, getStandInfo, addUser, editUser, deleteUser } from '../api'
+import { getAllGraduateByPage, getGraduateBySearch, getStandInfo, addGraduate, editGraduate, deleteGraduate } from '../api'
 export default {
     data() {
         return {
@@ -113,7 +118,7 @@ export default {
                 major: '',
                 grade: '',
                 username: '',
-                password: '123456' // 默认密码
+                password: '111111' // 默认密码
             },
             // 标准信息数据
             standInfos: {
@@ -130,8 +135,9 @@ export default {
                     }
                 ]
             },
-            majorList: [],
+            // 筛选后的院系专业列表
             departmentList: [],
+            majorList: [],
             // 表单验证规则
             rules: {
                 studentId: [
@@ -178,6 +184,25 @@ export default {
         }
     },
     methods: {
+        // 重置表单到初始状态
+        resetForm() {
+            this.form = {
+                studentId: '',
+                name: '',
+                gender: '',
+                department: '',
+                major: '',
+                grade: '',
+                username: '',
+                password: '111111' // 默认密码
+            }
+            this.$message.success('已清空表单');
+        },
+        // 实现恢复默认密码
+        resetPassword() {
+            this.form.password = '111111';
+            this.$message.success('已恢复默认密码，请保存');
+        },
         // 提交表单
         submit() {
             this.form.username = this.form.studentId;
@@ -186,19 +211,19 @@ export default {
                     // 提交表单的逻辑
                     if (this.modalType === 0) {
                         // 添加操作
-                        addUser(this.form).then((response) => {
+                        addGraduate(this.form).then((response) => {
                             if (response.data.code === 20000) {
-                                this.getAllUserByPageList();
+                                this.getAllGraduateByPageList();
                                 this.$message.success('添加成功');
                             } else {
-                                this.$message.warning('添加失败，该账户已存在');
+                                this.$message.warning('添加失败，已存在');
                             }
 
                         })
                     } else {
                         // 编辑操作
-                        editUser(this.form).then(() => {
-                            this.getAllUserByPageList();
+                        editGraduate(this.form).then(() => {
+                            this.getAllGraduateByPageList();
                             this.$message.success('更新成功');
                         })
                     }
@@ -224,11 +249,6 @@ export default {
                 }
             }
         },
-        // 实现恢复默认密码
-        resetPassword() {
-            this.form.password = '123456';
-            this.$message.success('已恢复默认密码，请保存');
-        },
         // 手动关闭表单(新增时不重置)
         handleClose() {
             if (this.modalType === 1) {
@@ -249,9 +269,9 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.delData.deleteId = row.studentId;
-                deleteUser(row.studentId).then(() => {
+                deleteGraduate(row.studentId).then(() => {
                     this.$message.success('删除成功');
-                    this.getAllUserByPageList();
+                    this.getAllGraduateByPageList();
                 })
             }).catch(() => {
                 this.$message.info('已取消删除');
@@ -261,8 +281,9 @@ export default {
         handleEdit(row) {
             this.modalType = 1;
             this.dialogVisible = true;
-            this.form = JSON.parse(JSON.stringify(row));    // 深拷贝
-            this.select_check()
+            this.form = JSON.parse(JSON.stringify(row));    // 由于专业依据学院，先深拷贝一次获得学院
+            this.select_check();
+            this.form = JSON.parse(JSON.stringify(row));    // 再次深拷贝全部
         },
         // 新增
         handleAdd() {
@@ -275,6 +296,11 @@ export default {
                 this.standInfos = data.data;
                 this.standInfos.standInfo.department_major = this.standInfos.standInfo.department
 
+                // 年级排序(大到小)
+                this.standInfos.standInfo.grade = this.standInfos.standInfo.grade.sort((a, b) => {
+                    return b - a;
+                })
+
                 // 过滤学院重复
                 const length = this.standInfos.standInfo.department.length
                 for (var i = 0; i < length; i++) {
@@ -285,27 +311,46 @@ export default {
             })
         },
         // 获取当前页用户数据和总人数
-        getAllUserByPageList() {
-            getAllUserByPage({ params: this.pageData }).then(({ data }) => {
+        getAllGraduateByPageList() {
+            getAllGraduateByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;    // 分页才是data1
                 this.total = data.total;
+                this.pageData.pageSize = 20;    // 恢复默认页面大小
             })
         },
         // 查找
         getSearchList() {
-            getUserBySearch({ params: this.userForm }).then(({ data }) => {
+            if (this.userForm.keyword == '') {
+                this.$message.error('请输入关键字');
+                return;
+            }
+            getGraduateBySearch({ params: this.userForm }).then(({ data }) => {
                 this.tableData = data.data;
+                this.total = data.total;
+                this.pageData.pageSize = this.total;    // 结果显示在一页
+                this.$message.success('共搜索到' + data.total + '条结果');
             })
         },
-        showAll(){
-            console.log('hhhh')
+        // 返回
+        backList() {
+            this.getAllGraduateByPageList()
+            this.$message.success('已返回原列表');
+        },
+        // 显示全部
+        showAll() {
             this.userForm.keyword = '';
-            this.getSearchList();
+            getGraduateBySearch({ params: this.userForm }).then(({ data }) => {
+                this.tableData = data.data;
+                this.total = data.total;
+                this.pageData.pageNum = 1;  // 结果显示在一页
+                this.pageData.pageSize = this.total;
+            })
+            this.$message.success('已在本页显示全部');
         },
         // 选择页码
         handlePage(val) {
             this.pageData.pageNum = val;
-            this.getAllUserByPageList();
+            this.getAllGraduateByPageList();
         },
         // 查找按钮
         onSubmit() {
@@ -313,7 +358,7 @@ export default {
         }
     },
     mounted() {
-        this.getAllUserByPageList();
+        this.getAllGraduateByPageList();
         this.getStandardInfo();
     }
 }
@@ -365,10 +410,11 @@ export default {
             position: absolute;
             bottom: 10px;
             padding-right: 20px;
+
             ::v-deep li:not(.disabled).active {
                 background-color: #aadd99;
             }
-            
+
         }
     }
 }

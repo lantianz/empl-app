@@ -5,6 +5,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import store from "./store";
 import router from "./router";
 
+
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
@@ -26,6 +27,8 @@ new Vue({
   store,
   render: (h) => h(App),
   created() {
-    store.commit("activeMenu", router)
+    store.commit("activeMenu", router),
+    store.commit("adminInfo"),
+    store.commit("checkCondition")
   }
 }).$mount("#app");

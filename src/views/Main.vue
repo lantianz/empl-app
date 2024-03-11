@@ -18,6 +18,8 @@
 <script>
 import CommonAside from '@/components/CommonAside.vue'
 import CommonHeader from '@/components/CommonHeader.vue'
+import store from "@/store";
+
 export default {
     data() {
         return {
@@ -27,7 +29,10 @@ export default {
     components: {
         CommonAside,
         CommonHeader
-    }
+    },
+    updated() {
+    store.commit("checkCondition")
+  }
 }
 </script>
 <style scoped>
