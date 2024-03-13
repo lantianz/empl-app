@@ -51,7 +51,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button style="margin-right: 30px" v-if="modalType === 0" @click="resetForm">清空</el-button>
+                <el-button style="float:left;" v-if="modalType === 0" @click="resetForm">清空</el-button>
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
@@ -231,6 +231,8 @@ export default {
                             if (response.data.code === 20000) {
                                 this.getAllEmplInfoByPageList();
                                 this.$message.success('添加成功');
+                                this.$refs.form.resetFields();
+                                this.dialogVisible = false;
                             } else {
                                 this.$message.warning('添加失败，已存在');
                             }
@@ -241,10 +243,10 @@ export default {
                         editEmplInfo(this.form).then(() => {
                             this.getAllEmplInfoByPageList();
                             this.$message.success('更新成功');
+                            this.$refs.form.resetFields();
+                            this.dialogVisible = false;
                         })
                     }
-                    this.$refs.form.resetFields();
-                    this.dialogVisible = false;
                 } else {
                     this.$message.error('表单验证失败');
                 }
@@ -323,10 +325,10 @@ export default {
         },
         // 获取当前页用户数据和总人数
         getAllEmplInfoByPageList() {
+            this.pageData.pageSize = 20;    // 恢复默认页面大小
             getAllEmplInfoByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;    // 分页才是data1
                 this.total = data.total;
-                this.pageData.pageSize = 20;    // 恢复默认页面大小
             })
         },
         // 查找

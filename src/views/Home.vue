@@ -1,113 +1,137 @@
 <template>
-    <el-row>
-      <el-col id="col8" :span="col_view ? 0 : 8" style="padding-right: 10px">
-        <el-card class="box-card">
-          <div class="user">
-            <img src="../assets/images/user.jpg" alt="">
-            <div class="userinfo">
-                <p class="name">admin</p>
-                <p class="access">管理员</p>
-            </div>
-          </div>
-          <div class="login-info">
-            <p>上次登录时间：<span>2024-3-1</span></p>
-            <p>上次登录地点：<span>桂林</span></p>
-          </div>
-        </el-card>
-        <el-card class="box-card" style="margin-top: 20px; height: 320px;">
-                    
-        </el-card>
-      </el-col>
-        <el-col :span="col_view ? 24 : 16" style="padding-left: 10px">
-            <el-card class="box-card" style="margin-bottom: 10px">
-                <div class="notice">
-                    <span class="title">公告</span>
-                    <el-carousel height="100px">
+    <el-row style="height: 98%;">
+        <el-col :span="8" style="padding-right: 10px; height: 100%;">
+            <el-card style="height: 36%;">
+                <div class="admin">
+                    <img src="../assets/images/avatar.png" alt="">
+                    <div class="admin-info">
+                        <p class="role-name">Admin</p>
+                        <p class="role-desc">管理员</p>
+                    </div>
+                </div>
+                <div class="new-time">
+                    <span>{{ newTime }}</span>
+                </div>
+            </el-card>
+            <el-card class="notice" style="margin-top: 4%; height: 60%;">
+                <span class="title">公告</span>
+                <el-carousel>
                     <el-carousel-item v-for="item in noticeData" :key="item.content">
                         <div class="content">
-                            <el-empty :image-size="70" v-if="!item.content" description="这里是空的~" style="padding: 0;flex-direction: row;"></el-empty>
+                            <el-empty v-if="!item.content" :image-size="70" description="这里是空的~"></el-empty>
                             {{ item.content }}
                         </div>
                     </el-carousel-item>
-                    </el-carousel>
-                </div>
+                </el-carousel>
             </el-card>
-            <el-card style="margin-top: 20px; height: 376px">
+        </el-col>
+        <el-col :span="16" style="padding-left: 10px; height: 100%;">
+            <el-card style="height: 99%">
+                <span class="r-span" style="margin-bottom: 50px;">欢迎使用毕业生就业信息管理系统</span>
+                <el-calendar v-model="value"></el-calendar>
             </el-card>
         </el-col>
     </el-row>
 </template>
 <script>
-import {  } from '../api'
+import { } from '../api'
 export default {
     data() {
         return {
+            newTime: "",
+            value: new Date(),
             col_view: false,
             noticeData: [{
-                    content:null
-                    //content:'这是一大堆公告这是一大堆公告！！'
-                }]
+                content: null
+                //content:'这是一大堆公告这是一大堆公告！！'
+            }]
         }
     },
     methods: {
-        widthGet(){
-            let width = document.getElementById("col8").offsetWidth;
-            if (width < 300){
-                this.col_view = true;
-            }
+        getNowTime() {
+            var date = new Date();
+            var time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
+                + this.addZero(date.getHours()) + ':' + this.addZero(date.getMinutes()) + ':' + this.addZero(date.getSeconds());
+            this.newTime = time;
+        },
+        addZero(s) {
+            return s < 10 ? ('0' + s) : s;
         }
+
     },
     mounted() {
-        this.widthGet();
+        this.getNowTime();
+        clearInterval(myTimeDisplay);//销毁之前
+        var myTimeDisplay = setInterval(() => {
+            this.getNowTime(); //每秒更新一次时间
+        }, 1000);
     }
 }
 </script>
 <style lang="less" scoped>
-.user {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-right: 40px;
-  }
-  .userinfo {
-      .name {
-          font-size: 32px;
-          margin-bottom: 10px;
-      }
-      .access {
-          color: #999999;
-      }
-  }
+.admin {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+
+    img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 40px;
+    }
+
+    .admin-info {
+        .role-name {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .role-desc {
+            color: #999999;
+        }
+    }
 }
-.login-info {
-  p {
-      line-height: 28px;
-      font-size: 14px;
-      color: #999999;
-  }
-  span {
-      color: #666666;
-      margin-left: 80px;
-  }
+
+.new-time {
+    text-align: center;
+
+    span {
+        font-size: 32px;
+        color: #999999;
+    }
 }
+
 .notice {
     text-align: center;
+
     .title {
         font-size: 36px;
         line-height: 40px;
         color: #666666;
     }
+
     .content {
         font-size: 20px;
         line-height: 30px;
         color: #999999;
-        padding-top: 20px;
     }
+}
+
+::v-deep .el-card__body {
+    display: flex;
+    flex-direction: column;
+
+    .r-span {
+        font-size: 32px;
+        color: #666666;
+    }
+}
+
+::v-deep .el-calendar-table .el-calendar-day {
+    height: 50px;
 }
 </style>

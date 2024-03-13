@@ -5,7 +5,7 @@ export const getStandInfo = (params) => {
     return http.get('/api/standInfo/getStandInfo', params);
 }
 
-// Admin Permission
+// Admin Permission...
 export const adminLogin = (data) => {
     return http.post('/api/admin/login', data);
 }
@@ -15,11 +15,14 @@ export const getMenu = (roleId) => {
 export const check = (params) => {
     return http.get('/api/admin/check', params);
 }
+export const changePwd = (params) => {
+    return http.put('/api/admin/changePwd', params);
+}
 export const adminLogout = (params) => {
     return http.post('/api/admin/logout', params);
 }
 
-// BaseInfo页
+// BaseInfo页...
 export const getAllGraduateByPage = (params) => {
     return http.get('/api/graduate/getAllUserByPage', params);
 }
@@ -36,7 +39,7 @@ export const editGraduate = (params) => {
     return http.put('/api/graduate/editUser', params);
 }
 
-// EmplInfo页
+// EmplInfo页...
 export const getAllEmplInfoByPage = (params) => {
     return http.get('/api/emplInfo/getAllUserByPage', params);
 }
@@ -56,7 +59,7 @@ export const editEmplInfo = (params) => {
     return http.put('/api/emplInfo/editUser', params);
 }
 
-// DeptAdminInfo页
+// DeptAdminInfo页...
 export const getAllDeptAdminInfo = (params) => {
     return http.get('/api/admin/allDeptAdmin', params);
 }
@@ -74,4 +77,25 @@ export const deleteAllDeptAdmin = (ids) => {
 }
 export const editDeptAdmin = (params) => {
     return http.put('/api/admin/editDeptAdmin', params);
+}
+
+// Account...
+export const editGraduateByList = (ids, params) => {
+    return http.put(`/api/graduate/editUserByList/${ids}/${params}`);
+}
+export const getDeptUserBySearch = (params) => {
+    return http.get('/api/graduate/getDeptUserBySearch', params);
+}
+
+// ByDept...
+export const getByDeptTable = (params) => {
+    return http.get('/api/emplInfo/byDept', params);
+}
+export const getByDeptTableByPage = (params) => {
+    return http.get('/api/emplInfo/byDeptByPage', params);
+}
+
+// ByMajor
+export const getbyMajorTable = (params) => {
+    return http.get('/api/emplInfo/byMajor', params);
 }

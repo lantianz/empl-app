@@ -44,7 +44,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button style="margin-right: 30px" v-if="modalType === 0" @click="resetForm">清空</el-button>
+                <el-button style="float:left;" v-if="modalType === 0" @click="resetForm">清空</el-button>
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
@@ -84,8 +84,7 @@
                 </el-table-column>
                 <el-table-column prop="username" label="账号">
                 </el-table-column>
-                <el-table-column prop="" label="密码">
-                    ******
+                <el-table-column prop="" label="密码" :formatter="fillNone">
                 </el-table-column>
                 <el-table-column fixed="right" prop="" width="150px" label="操作">
                     <template slot-scope="scope">
@@ -215,6 +214,8 @@ export default {
                             if (response.data.code === 20000) {
                                 this.getAllGraduateByPageList();
                                 this.$message.success('添加成功');
+                                this.$refs.form.resetFields();
+                                this.dialogVisible = false;
                             } else {
                                 this.$message.warning('添加失败，已存在');
                             }
@@ -225,10 +226,10 @@ export default {
                         editGraduate(this.form).then(() => {
                             this.getAllGraduateByPageList();
                             this.$message.success('更新成功');
+                            this.$refs.form.resetFields();
+                            this.dialogVisible = false;
                         })
                     }
-                    this.$refs.form.resetFields();
-                    this.dialogVisible = false;
                 } else {
                     this.$message.error('表单验证失败');
                 }
@@ -260,6 +261,12 @@ export default {
         cancel() {
             this.$refs.form.resetFields();
             this.dialogVisible = false;
+        },
+        // username对应password默认填充
+        fillNone(row) {
+            let show = null
+            row.username ? show = '******' : show = ''
+            return show
         },
         // 删除
         handleDelete(row) {
@@ -312,10 +319,10 @@ export default {
         },
         // 获取当前页用户数据和总人数
         getAllGraduateByPageList() {
+            this.pageData.pageSize = 20;    // 恢复默认页面大小
             getAllGraduateByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;    // 分页才是data1
                 this.total = data.total;
-                this.pageData.pageSize = 20;    // 恢复默认页面大小
             })
         },
         // 查找

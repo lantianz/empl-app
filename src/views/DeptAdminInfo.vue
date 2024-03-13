@@ -5,7 +5,8 @@
             <!-- 用户表单信息 -->
             <el-form class="form-user" ref="form" :rules="rules" :inline="true" :model="form" label-width="140px">
                 <el-form-item label="工号：" prop="jobId">
-                    <el-input placeholder="请输入工号" v-model="form.jobId" :disabled="modalType === 1" id="jobId"></el-input>
+                    <el-input placeholder="请输入工号" v-model="form.jobId" :disabled="modalType === 1"
+                        id="jobId"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名：" prop="name">
                     <el-input placeholder="请输入姓名" v-model="form.name" id="name"></el-input>
@@ -26,7 +27,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button style="margin-right: 30px" v-if="modalType === 0" @click="resetForm">清空</el-button>
+                <el-button style="float:left;" v-if="modalType === 0" @click="resetForm">清空</el-button>
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit">保 存</el-button>
             </span>
@@ -163,6 +164,8 @@ export default {
                             if (response.data.code === 20000) {
                                 this.getAllDeptAdminInfoList();
                                 this.$message.success('添加成功');
+                                this.$refs.form.resetFields();
+                                this.dialogVisible = false;
                             } else {
                                 this.$message.warning('添加失败，已存在');
                             }
@@ -173,10 +176,10 @@ export default {
                         editDeptAdmin(this.form).then(() => {
                             this.getAllDeptAdminInfoList();
                             this.$message.success('更新成功');
+                            this.$refs.form.resetFields();
+                            this.dialogVisible = false;
                         })
                     }
-                    this.$refs.form.resetFields();
-                    this.dialogVisible = false;
                 } else {
                     this.$message.error('表单验证失败');
                 }
