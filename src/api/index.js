@@ -87,15 +87,31 @@ export const getDeptUserBySearch = (params) => {
     return http.get('/api/graduate/getDeptUserBySearch', params);
 }
 
+// 汇总与统计分页
+export const getTotalTableByPage = (params) => {
+    return http.get('/api/emplInfo/totalByPage', params);
+}
 // ByDept...
 export const getByDeptTable = (params) => {
     return http.get('/api/emplInfo/byDept', params);
 }
-export const getByDeptTableByPage = (params) => {
-    return http.get('/api/emplInfo/byDeptByPage', params);
-}
 
 // ByMajor
-export const getbyMajorTable = (params) => {
+export const getByMajorTable = (params) => {
     return http.get('/api/emplInfo/byMajor', params);
+}
+
+// ByType
+export const getByTypeTable = (params) => {
+    return http.get('/api/emplInfo/byType', params);
+}
+
+// ByPosition
+export const getByPositionTable = (params) => {
+    return http.get('/api/emplInfo/byPosition', params);
+}
+
+// EmplInfoTotal
+export const getEmplInfoTotalTable = (params) => {
+    return http.get('/api/emplInfo/emplInfoTotal', params);
 }

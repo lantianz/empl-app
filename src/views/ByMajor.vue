@@ -2,6 +2,7 @@
     <div class="manage">
         <div class="manage-header">
             <!-- 选择栏 -->
+            <span style="font-size: 12px; color: #bb6666; margin-right: 5px;">院系为<br>必选项</span>
             <el-form style="margin-top: 20px;" :inline="true" :model="dept">
                 <el-form-item>
                     <el-select v-model="dept.department" placeholder="请选择院系">
@@ -15,8 +16,8 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="deptConfirm">确认</el-button>
-                    <el-button type="primary" @click="showAllGrade">全部年级</el-button>
+                    <el-button type="primary" size="mini" @click="deptConfirm">确认</el-button>
+                    <el-button type="primary" size="mini" @click="showAllGrade">全部年级</el-button>
                 </el-form-item>
             </el-form>
             <h1 style="font-size: 18px; color: #666666; margin-left: 50px;">就业信息一览表（按专业）</h1>
@@ -47,7 +48,7 @@
     </div>
 </template>
 <script>
-import { getbyMajorTable, getByDeptTableByPage, getStandInfo } from '../api'
+import { getByMajorTable, getTotalTableByPage, getStandInfo } from '../api'
 export default {
     data() {
         return {
@@ -78,6 +79,7 @@ export default {
             pageData: {
                 pageNum: 1,
                 pageSize: 10,
+                sign: 'byMajor',
                 department: '',
                 grade: ''    // 用来传参
             },
@@ -107,8 +109,10 @@ export default {
         },
         // 获取当前院系总人数
         getAllByMajorTable() {
-            getbyMajorTable({ params: this.dept }).then(({ data }) => {
+            getByMajorTable({ params: this.dept }).then(({ data }) => {
                 this.tableData = data;
+                this.total = this.tableData.length;
+                this.pageData.pageSize = this.total;
                 // 就业率小数转百分数
                 this.tableData.forEach(item => {
                     item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
@@ -120,7 +124,7 @@ export default {
             this.pageData.department = this.dept.department;
             this.pageData.grade = this.dept.grade;
             this.pageData.pageSize = 10;    // 恢复默认页面大小
-            getByDeptTableByPage({ params: this.pageData }).then(({ data }) => {
+            getTotalTableByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;
                 // 就业率小数转百分数
                 this.tableData.forEach(item => {
@@ -147,8 +151,6 @@ export default {
                 return;
             }
             this.getAllByMajorTable();
-            this.total = this.tableData.length;
-            this.pageData.pageSize = this.total;
             this.tip = this.dept.department + '全部年级';
             this.$message.success('已在本页显示全部就业信息');
         },

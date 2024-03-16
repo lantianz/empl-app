@@ -3,7 +3,8 @@
   class="el-menu-vertical-demo" 
   @open="handleOpen" 
   @close="handleClose"
-  :collapse="isCollapse"  
+  :collapse="isCollapse"
+  unique-opened
   background-color="#fff"
   text-color="#333333"
   active-text-color="#aadd99"

@@ -51,7 +51,7 @@
         </el-dialog>
         <div class="manage-header">
             <!-- 新增 -->
-            <el-button type="primary" @click="handleAdd()">+ 新增</el-button>
+            <el-button type="primary" @click="handleAdd()" icon="el-icon-plus">新增</el-button>
             <h1 style="font-size: 18px; color: #666666;">毕业生基本信息表</h1>
             <!-- 搜索 -->
             <el-form style="margin-top: 20px;" :inline="true" :model="userForm">
@@ -59,8 +59,8 @@
                     <el-input v-model="userForm.keyword" placeholder="请输入学号或姓名查找" id="search"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查找</el-button>
-                    <el-button type="primary" @click="backList">返回</el-button>
+                    <el-button type="primary" @click="onSubmit" icon="el-icon-search">查找</el-button>
+                    <el-button type="primary" @click="backList" icon="el-icon-refresh-left">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>

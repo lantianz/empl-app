@@ -1,32 +1,35 @@
 <template>
     <el-row style="height: 98%;">
+        <!-- 左边 -->
         <el-col :span="8" style="padding-right: 10px; height: 100%;">
             <el-card style="height: 36%;">
                 <div class="admin">
                     <img src="../assets/images/avatar.png" alt="">
                     <div class="admin-info">
-                        <p class="role-name">Admin</p>
-                        <p class="role-desc">管理员</p>
+                        <p class="role-name">{{ adminInfo.role.roleName }}</p>
+                        <p class="role-desc">{{ adminInfo.role.roleDesc }}</p>
                     </div>
                 </div>
                 <div class="new-time">
                     <span>{{ newTime }}</span>
                 </div>
             </el-card>
-            <el-card class="notice" style="margin-top: 4%; height: 60%;">
-                <span class="title">公告</span>
+            <!-- 提示 -->
+            <el-card class="notice" style="margin-top: 3%; height: 58%;">
+                <span class="title">提示</span>
                 <el-carousel>
                     <el-carousel-item v-for="item in noticeData" :key="item.content">
+                        <el-empty v-if="!item.content" :image-size="150" description="这里是空的~"></el-empty>
                         <div class="content">
-                            <el-empty v-if="!item.content" :image-size="70" description="这里是空的~"></el-empty>
                             {{ item.content }}
                         </div>
                     </el-carousel-item>
                 </el-carousel>
             </el-card>
         </el-col>
+        <!-- 右边 -->
         <el-col :span="16" style="padding-left: 10px; height: 100%;">
-            <el-card style="height: 99%">
+            <el-card style="height: 96%">
                 <span class="r-span" style="margin-bottom: 50px;">欢迎使用毕业生就业信息管理系统</span>
                 <el-calendar v-model="value"></el-calendar>
             </el-card>
@@ -43,7 +46,7 @@ export default {
             col_view: false,
             noticeData: [{
                 content: null
-                //content:'这是一大堆公告这是一大堆公告！！'
+                //content:'这是一大堆提示这是一大堆提示！这是一大堆提示这是一大堆提示！这是一大堆提示这是一大堆提示！！这是一大堆提示这是一大堆提示！！这是一大堆提示这是一大堆提示！！'
             }]
         }
     },
@@ -65,6 +68,11 @@ export default {
         var myTimeDisplay = setInterval(() => {
             this.getNowTime(); //每秒更新一次时间
         }, 1000);
+    },
+    computed: {
+        adminInfo() {
+            return this.$store.state.admin.info || JSON.parse(localStorage.getItem('info'));
+        }
     }
 }
 </script>
@@ -81,7 +89,6 @@ export default {
         width: 100px;
         height: 100px;
         border-radius: 50%;
-        margin-right: 40px;
     }
 
     .admin-info {
@@ -115,6 +122,7 @@ export default {
     }
 
     .content {
+        margin:20px auto;
         font-size: 20px;
         line-height: 30px;
         color: #999999;

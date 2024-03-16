@@ -43,7 +43,7 @@
     </div>
 </template>
 <script>
-import { getByDeptTable, getByDeptTableByPage, getStandInfo } from '../api'
+import { getByDeptTable, getTotalTableByPage, getStandInfo } from '../api'
 export default {
     data() {
         return {
@@ -71,6 +71,7 @@ export default {
             pageData: {
                 pageNum: 1,
                 pageSize: 10,
+                sign: 'byDept',
                 department: '',
                 grade: ''   // 用来传参
             },
@@ -92,6 +93,8 @@ export default {
         getAllByDeptTable() {
             getByDeptTable({ params: this.dept }).then(({ data }) => {
                 this.tableData = data;
+                this.total = this.tableData.length;
+                this.pageData.pageSize = this.total;
                 // 就业率小数转百分数
                 this.tableData.forEach(item => {
                     item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
@@ -102,7 +105,7 @@ export default {
         getAllByDeptTableBypageList() {
             this.pageData.grade = this.dept.grade;
             this.pageData.pageSize = 10;    // 恢复默认页面大小
-            getByDeptTableByPage({ params: this.pageData }).then(({ data }) => {
+            getTotalTableByPage({ params: this.pageData }).then(({ data }) => {
                 this.tableData = data.data1;
                 // 就业率小数转百分数
                 this.tableData.forEach(item => {
@@ -121,8 +124,6 @@ export default {
         // 本页显示全部
         showAll() {
             this.getAllByDeptTable();
-            this.total = this.tableData.length;
-            this.pageData.pageSize = this.total;
             this.tip = '全部年';
             this.$message.success('已在本页显示全部就业信息');
         },

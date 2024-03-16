@@ -1,18 +1,24 @@
 <template>
-    <div class="login-container">
-        <el-form :inline="true" ref="form" :model="adminForm" :rules="rules">
-            <h3 class="login_title">登 录</h3>
-            <el-form-item label="账 号" prop="username">
-                <el-input class="form_block" v-model="adminForm.username" placeholder="请输入账号" id="username"></el-input>
-            </el-form-item>
-            <el-form-item label="密 码" prop="password">
-                <el-input class="form_block" type="password" v-model="adminForm.password" placeholder="请输入密码"
-                    id="password" show-password></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="login" style="">登 录</el-button>
-            </el-form-item>
-        </el-form>
+    <div>
+        <div class="header-container">
+            <span>毕业生就业信息管理系统</span>
+        </div>
+        <div class="main-container">
+            <el-form class="login" :inline="true" ref="form" :model="adminForm" :rules="rules">
+                <h3 class="login_title">登 录</h3>
+                <el-form-item label="账 号" prop="username">
+                    <el-input class="form_block" v-model="adminForm.username" placeholder="请输入账号"
+                        id="username"></el-input>
+                </el-form-item>
+                <el-form-item label="密 码" prop="password">
+                    <el-input class="form_block" type="password" v-model="adminForm.password" placeholder="请输入密码"
+                        id="password" show-password></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="login" style="">登 录</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -73,33 +79,64 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login-container {
-    width: 350px;
-    margin: 180px auto;
-    padding: 35px 15px 15px 15px;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    background-color: #fff;
-    box-shadow: 0 0 25px #ddd;
-    box-sizing: border-box;
+.el-button {
+    border: 2px solid #eeeeee;
+    border-radius: 8px;
 
-    .login_title {
-        text-align: center;
-        margin-bottom: 40px;
-        color: #505458;
+    &:hover {
+        color: #ccc;
     }
+}
 
-    .el-form-item {
-        margin-left: 20px;
+.el-button--primary {
+    color: #fff;
+    background-color: #aadd99;
 
-        .el-input {
-            width: 210px;
+    &:hover {
+        background-color: #99cc88;
+    }
+}
+.header-container {
+    text-align: center;
+    margin-top: 60px;
+
+    span {
+        font-size: 36px;
+        color: #666666;
+    }
+}
+
+.main-container {
+    display: flex;
+    margin: 80px auto;
+    .login {
+        width: 350px;
+        margin: auto;
+        padding: 35px 15px 15px 15px;
+        border-radius: 15px;
+        background-color: #fff;
+        box-shadow: 0 0 25px #ddd;
+        box-sizing: border-box;
+
+        .login_title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #505458;
         }
 
-        .el-button {
-            width: 210px;
-            margin-left: 55px;
+        .el-form-item {
+            margin-left: 20px;
+
+            .el-input {
+                width: 210px;
+            }
+
+            .el-button {
+                width: 210px;
+                margin-left: 55px;
+            }
         }
+
     }
 
 }

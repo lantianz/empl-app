@@ -1,7 +1,7 @@
 <template>
     <div class="manage">
         <div class="manage-header">
-            <h1 style="font-size: 18px; color: #666666;">就业信息统计表（签约单位类别）</h1>
+            <h1 style="font-size: 18px; color: #666666;">就业情况统计表</h1>
         </div>
         <!-- 主体表格 -->
         <div class="common-main">
@@ -34,18 +34,18 @@
                 <el-col :span="19">
                     <div class="r-content">
                         <el-table stripe border height="90%" :data="tableData" style="width: 100%;"
-                            :default-sort="{ prop: 'companyType' }">
+                            :default-sort="{ prop: 'countOfGraduate' }">
                             <el-table-column type="index" width="80px" label="本页序号">
                             </el-table-column>
-                            <el-table-column prop="companyType" width="130px" sortable label="就业单位类别">
+                            <el-table-column prop="countOfGraduate" sortable label="毕业生总数">
                             </el-table-column>
-                            <el-table-column prop="countOfThisTypeEmpl" sortable label="该类别本院系就业人数">
+                            <el-table-column prop="countOfOnTime" sortable label="按时就业人数">
                             </el-table-column>
-                            <el-table-column prop="allInDeptRate" sortable label="占全类别百分比(本院)">
+                            <el-table-column prop="countOfEmployed" sortable label="毕业后两年内就业人数">
                             </el-table-column>
-                            <el-table-column prop="countOfAllTypeEmpl" sortable label="该类别全院系合计人数">
+                            <el-table-column prop="employmentOnTimeRate" sortable label="按时就业率">
                             </el-table-column>
-                            <el-table-column prop="allInAllDeptRate" sortable label="占全类别百分比(全院)">
+                            <el-table-column prop="employmentRate" sortable label="毕业两年内就业率">
                             </el-table-column>
                         </el-table>
                         <div class="pager">
@@ -64,7 +64,7 @@
     </div>
 </template>
 <script>
-import { getByTypeTable, getTotalTableByPage, getStandInfo } from '../api'
+import { getEmplInfoTotalTable, getTotalTableByPage, getStandInfo } from '../api'
 export default {
     data() {
         return {
@@ -100,7 +100,7 @@ export default {
             pageData: {
                 pageNum: 1,
                 pageSize: 10,
-                sign: 'byType',
+                sign: 'byInfoTotal',
                 department: '',
                 grade: ''    // 用来传参
             },
@@ -129,15 +129,15 @@ export default {
             })
         },
         // 获取当前院系总人数
-        getAllByTypeTable() {
-            getByTypeTable({ params: this.dept }).then(({ data }) => {
+        getAllTotalTable() {
+            getEmplInfoTotalTable({ params: this.dept }).then(({ data }) => {
                 this.tableData = data;
                 this.total = this.tableData.length;
                 this.pageData.pageSize = this.total;
                 // 小数转百分数
                 this.tableData.forEach(item => {
-                    item.allInDeptRate = Number(item.allInDeptRate * 100).toFixed(1) + '%';
-                    item.allInAllDeptRate = Number(item.allInAllDeptRate * 100).toFixed(1) + '%';
+                    item.employmentOnTimeRate = Number(item.employmentOnTimeRate * 100).toFixed(1) + '%';
+                    item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
                 })
             })
         },
@@ -150,8 +150,8 @@ export default {
                 this.tableData = data.data1;
                 // 小数转百分数
                 this.tableData.forEach(item => {
-                    item.allInDeptRate = Number(item.allInDeptRate * 100).toFixed(1) + '%';
-                    item.allInAllDeptRate = Number(item.allInAllDeptRate * 100).toFixed(1) + '%';
+                    item.employmentOnTimeRate = Number(item.employmentOnTimeRate * 100).toFixed(1) + '%';
+                    item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
                 })
                 this.total = data.total;
             })
@@ -166,16 +166,18 @@ export default {
                     this.$message.success('已显示全部年级就业信息');
                 }
             })
+
         },
         // 本页显示全部
         showAll() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    this.getAllByTypeTable();
+                    this.getAllTotalTable();
                     this.tip = this.dept.department + '全部年级';
                     this.$message.success('已在本页显示全部就业信息');
                 }
             })
+
         },
         // 选择页码
         handlePage(val) {
@@ -194,7 +196,6 @@ export default {
                     this.$message.success('已在本页显示' + this.tip + '就业信息');
                 }
             })
-
         },
         // 确定年级
         gradeConfirm() {

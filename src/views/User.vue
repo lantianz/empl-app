@@ -5,13 +5,15 @@
                 <div class="admin-info">
                     <img src="../assets/images/avatar.png" alt="">
                     <div style="text-align: center;">
-                        <p class="role-name">admin</p>
-                        <p class="role-desc">超级管理员</p>
+                        <p class="role-name">{{ adminInfo.role.roleName }}</p>
+                        <p class="role-desc">{{ adminInfo.role.roleDesc }}</p>
                     </div>
                 </div>
                 <el-divider></el-divider>
-                <div>
-                    
+                <div class="admin-introduce">
+                    <h3>权限介绍：</h3>
+                    <p>总管理员可以对各院系毕业生进行相关汇总与统计，以及对院系工作负责人进行管理。</p>
+                    <p>各院系就业工作负责人只能对所在院系的毕业生进行相关汇总与统计。</p>
                 </div>
             </el-card>
         </el-col>
@@ -23,40 +25,53 @@
                             <i class="el-icon-user"></i>
                             姓名
                         </template>
-                        lantianzhi
+                        {{ adminInfo.name }}
                     </el-descriptions-item>
                     <el-descriptions-item>
                         <template slot="label">
                             <i class="el-icon-mobile-phone"></i>
                             手机号
                         </template>
-                        18100000000
+                        {{ adminInfo.phone }}
                     </el-descriptions-item>
                     <el-descriptions-item>
                         <template slot="label">
-                            <i class="el-icon-location-outline"></i>
+                            <i class="el-icon-message"></i>
                             邮箱
                         </template>
-                        325325ewtwe@zzi.cn
+                        {{ adminInfo.email }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                        <template slot="label">
+                            <i class="el-icon-bank-card"></i>
+                            账号
+                        </template>
+                        {{ adminInfo.username }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                        <template slot="label">
+                            <i class="el-icon-suitcase"></i>
+                            工号
+                        </template>
+                        {{ adminInfo.jobId }}
                     </el-descriptions-item>
                     <el-descriptions-item>
                         <template slot="label">
                             <i class="el-icon-tickets"></i>
                             权限
                         </template>
-                        <el-tag type="success">超级管理员</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item>
-                        <template slot="label">
-                            <i class="el-icon-office-building"></i>
-                            联系地址
-                        </template>
-                        广西桂林市雁山区雁中路1号广西师范大学
+                        <el-tag type="success">{{ adminInfo.role.roleDesc }}</el-tag>
                     </el-descriptions-item>
                 </el-descriptions>
             </el-card>
             <el-card class="box-card" style="margin-top: 10px; height: 64%;">
-
+                <div slot="header" class="clearfix">
+                    <h4 style="color:#666666;"><i class="el-icon-star-on"></i>链接</h4>
+                </div>
+                <div class="link" v-for="(item,index) in linkList.name" :key="item.name">
+                    <span>{{ item }}：</span>
+                    <el-link :href=linkList.link[index] target="_blank" type="success">{{ linkList.link[index] }}</el-link><br>
+                </div>
             </el-card>
         </el-col>
     </el-row>
@@ -65,7 +80,23 @@
 export default {
     data() {
         return {
-            
+            linkList: {
+                link: ['https://www.baidu.com',
+                    'https://www.bilibili.com',
+                    'https://sso-443.webvpn.gxnu.edu.cn',
+                    'http://www.dean.gxnu.edu.cn/',
+                    'https://co2.cnki.net/'],
+                name: ['百度',
+                    '哔哩哔哩',
+                    '广西师大WebVPN',
+                    '广西师大教务处',
+                    '广西师大本科毕业论文管理']
+            }
+        }
+    },
+    computed: {
+        adminInfo() {
+            return this.$store.state.admin.info || JSON.parse(localStorage.getItem('info'));
         }
     }
 }
@@ -89,6 +120,24 @@ export default {
 
     .role-desc {
         color: #999999;
+    }
+}
+
+.admin-introduce {
+    h3 {
+        color: #666666;
+    }
+
+    p {
+        margin-top: 10px;
+        color: #999999;
+        text-indent: 2em;
+    }
+}
+.link {
+    span {
+        font-size: 14px;
+        color: #666666;
     }
 }
 </style>
