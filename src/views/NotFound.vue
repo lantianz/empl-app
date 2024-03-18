@@ -23,11 +23,14 @@ export default {
 <style lang="less" scoped>
 .not {
   margin: 100px;
+
   h1 {
     color: red;
   }
-  p,span {
-    color: #999999 
+
+  p,
+  span {
+    color: #999999
   }
 }
 </style>

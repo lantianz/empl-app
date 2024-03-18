@@ -68,9 +68,10 @@
                 <div slot="header" class="clearfix">
                     <h4 style="color:#666666;"><i class="el-icon-star-on"></i>链接</h4>
                 </div>
-                <div class="link" v-for="(item,index) in linkList.name" :key="item.name">
+                <div class="link" v-for="(item, index) in linkList.name" :key="item.name">
                     <span>{{ item }}：</span>
-                    <el-link :href=linkList.link[index] target="_blank" type="success">{{ linkList.link[index] }}</el-link><br>
+                    <el-link :href=linkList.link[index] target="_blank" type="success">{{ linkList.link[index]
+                        }}</el-link><br>
                 </div>
             </el-card>
         </el-col>
@@ -134,6 +135,7 @@ export default {
         text-indent: 2em;
     }
 }
+
 .link {
     span {
         font-size: 14px;

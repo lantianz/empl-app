@@ -1,15 +1,7 @@
 <template>
-  <el-menu default-active="2" 
-  class="el-menu-vertical-demo" 
-  @open="handleOpen" 
-  @close="handleClose"
-  :collapse="isCollapse"
-  unique-opened
-  background-color="#fff"
-  text-color="#333333"
-  active-text-color="#aadd99"
-  >
-    <h3>{{isCollapse ? '管理':'就业信息管理系统'}}</h3>
+  <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+    :collapse="isCollapse" unique-opened background-color="#fff" text-color="#333333" active-text-color="#aadd99">
+    <h3>{{ isCollapse ? '管理' : '就业信息管理系统' }}</h3>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.name" :index="item.name">
       <i :class="`el-icon-${item.icon}`"></i>
       <span slot="title">{{ item.label }}</span>
@@ -31,7 +23,7 @@
 export default {
   data() {
     return {
-      
+
     };
   },
   methods: {
@@ -75,9 +67,11 @@ export default {
   width: 200px;
   min-height: 400px;
 }
+
 .el-menu {
   border-right: none;
   height: 100vh;
+
   h3 {
     color: #666666;
     text-align: center;

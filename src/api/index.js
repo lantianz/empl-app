@@ -87,6 +87,23 @@ export const getDeptUserBySearch = (params) => {
     return http.get('/api/graduate/getDeptUserBySearch', params);
 }
 
+// 资讯推送
+export const getEmplNews = (params) => {
+    return http.get('/api/emplNews/getEmplNews', params);
+}
+export const getEmplNewsBySearch = (params) => {
+    return http.get('/api/emplNews/getEmplNewsBySearch', params);
+}
+export const addEmplNews = (data) => {
+    return http.post('/api/emplNews/addEmplNews', data);
+}
+export const deleteEmplNews = (newsId) => {
+    return http.delete(`/api/emplNews/deleteEmplNews/${newsId}`);
+}
+export const editEmplNews = (params) => {
+    return http.put('/api/emplNews/editEmplNews', params);
+}
+
 // 汇总与统计分页
 export const getTotalTableByPage = (params) => {
     return http.get('/api/emplInfo/totalByPage', params);

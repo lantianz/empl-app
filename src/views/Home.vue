@@ -122,7 +122,7 @@ export default {
     }
 
     .content {
-        margin:20px auto;
+        margin: 20px auto;
         font-size: 20px;
         line-height: 30px;
         color: #999999;

@@ -1,102 +1,268 @@
-<template>  
-    <div class="job-news-list-page">  
-      <el-container>  
-        <el-header>  
-          <el-button type="primary" @click="addNewsDialogVisible = true">新增就业资讯</el-button>  
-        </el-header>  
-        <el-main>  
-          <el-row :gutter="20" style="height: 200px; background-color: aqua;">  
-            <el-col v-for="(news, index) in newsList" :key="index" :span="12">  
-              <div class="news-item">  
-                <h3>{{ news.title }}</h3>  
-                <p>{{ news.content }}</p>  
-                <el-button type="text" @click="viewNews(news)">查看</el-button>  
-                <el-button type="text" @click="editNews(news)">编辑</el-button>  
-                <el-button type="text" @click="deleteNews(news.id)">删除</el-button>  
-              </div>  
-            </el-col>  
-          </el-row>  
-        </el-main>  
-        <el-dialog :visible.sync="addNewsDialogVisible" title="新增就业资讯">  
-          <el-form ref="addNewsForm" :model="addNewsForm" label-width="120px">  
-            <el-form-item label="标题">  
-              <el-input v-model="addNewsForm.title"></el-input>  
-            </el-form-item>  
-            <!-- 富文本编辑内容 -->
-            <el-form-item label="内容">  
-              
-            </el-form-item>  
-            <el-form-item>  
-              <el-button type="primary" @click="submitNewNews">保存</el-button>  
-              <el-button @click="addNewsDialogVisible = false">取消</el-button>  
-            </el-form-item>  
-          </el-form>  
-        </el-dialog>  
-      </el-container>  
-    </div>  
-  </template>  
-    
-  <script>  
-    
-  export default {
-    data() {  
-      return {  
-        newsList: [], // 假设这是从后端API获取的就业资讯列表  
-        addNewsDialogVisible: false,  
-        addNewsForm: {  
-          title: '',  
-          content: ''  
-        }  
-      }  
-    },  
-    created() {  
-      this.fetchNewsList();  
-    },  
-    methods: {  
-      fetchNewsList() {  
-        // 假设你有一个API端点用于获取就业资讯列表  
-        // 发送GET请求到后端API获取列表  
-      },  
-      viewNews(news) {  
-        // 处理查看新闻的逻辑，可以弹出一个新的对话框显示新闻详情  
-        console.log('查看新闻:', news);  
-      },  
-      editNews(news) {  
-        // 处理编辑新闻的逻辑，可以弹出一个新的对话框用于编辑新闻  
-        console.log('编辑新闻:', news);  
+<template>
+  <div class="el-container">
+    <div class="el-header">
+      <el-button type="primary" @click="handleAdd" icon="el-icon-plus">新增就业资讯</el-button>
+      <h1 style="font-size: 18px; color: #666666;">就业资讯推送</h1>
+      <!-- 搜索 -->
+      <el-form style="margin-top: 20px;" :inline="true" :model="searchForm">
+        <el-form-item label="模糊搜索：">
+          <el-input v-model="searchForm.keyword" placeholder="请输入标题或作者查找" id="search"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit" icon="el-icon-search">查找</el-button>
+          <el-button type="primary" @click="backList" icon="el-icon-refresh-left">返回</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="el-main">
+      <el-table stripe border :data="tableData" show-overflow-tooltip="true" height="450" style="width: 100%">
+        <el-table-column type="index" width="50px" label="">
+        </el-table-column>
+        <el-table-column prop="newsId" width="120px" sortable label="资讯ID">
+        </el-table-column>
+        <el-table-column prop="title" label="标题">
+        </el-table-column>
+        <el-table-column prop="author" width="120px" label="作者">
+        </el-table-column>
+        <el-table-column prop="sendTime" width="145px" label="最后更新时间">
+        </el-table-column>
+        <el-table-column prop="" label="内容" :formatter="putContent">
+        </el-table-column>
+        <el-table-column width="225px" label="操作">
+          <template slot-scope="scope">
+            <el-button type="info" size="mini" @click="viewNews(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span style="color: #999999; font-size: 14px;">共{{ tableData.length }}条数据</span>
+    </div>
+    <!-- 编辑资讯内容对话框 -->
+    <el-dialog :visible.sync="dialogVisible" title="新增就业资讯" width="75%">
+      <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+        <el-form-item label="资讯ID" prop="newsId">
+          <el-input v-model="form.newsId" id="newsId" disabled style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="form.title" id="title" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="作者" prop="author">
+          <el-input v-model="form.author" id="author" style="width:150px;"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" prop="content" style="width:95%;">
+          <div id="editor"></div>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitNewNews">保存</el-button>
+          <el-button @click="cancel">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!-- 右抽屉显示资讯内容 -->
+    <el-drawer title="资讯展示" :visible.sync="drawer" size="100%">
+      <div>
+        <common-news-detail :newsData="newsDetail"></common-news-detail>
+      </div>
+    </el-drawer>
+  </div>
+</template>
+
+<script>
+import CommonNewsDetail from '@/components/CommonNewsDetail.vue'
+import { getEmplNews, getEmplNewsBySearch, addEmplNews, deleteEmplNews, editEmplNews } from '../api'
+import E from "wangeditor"
+// 初始化富文本编辑器
+let editor
+function initEditor(content) {
+  setTimeout(() => {
+    if (!editor) {
+      editor = new E('#editor')
+      editor.config.placeholder = '请输入内容'
+      editor.config.uploadFileName = 'file'
+      editor.config.uploadImgServer = '/api/api/files/wang/upload'
+      editor.create()
+    }
+    editor.txt.html(content)
+  }, 0)
+}
+
+export default {
+  data() {
+    return {
+      tableData: [], // 假设这是从后端API获取的就业资讯列表  
+      newsDetail: {}, // 资讯详情（传值给子组件）
+      drawer: false,
+      dialogVisible: false,
+      modalType: 0,// 0表示添加，1表示编辑
+      form: {
+        newsId: '',
+        title: '',
+        author: '',
+        content: ''
       },
-    deleteNews(newsId) {  
-      // 处理删除新闻的逻辑，发送DELETE请求到后端API删除新闻  
-    },  
-    submitNewNews() {  
-      // 处理保存新就业资讯的逻辑，发送POST请求到后端API保存新闻  
-    }  
-  }  
+      rules: {
+        newsId: [{ required: true, message: '请输入资讯ID', trigger: 'blur' }],
+        title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+        author: [{ required: true, message: '请输入作者', trigger: 'blur' }],
+        content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
+      },
+      searchForm: {
+        keyword: ''
+      }
+    }
+  },
+  components: {
+    CommonNewsDetail
+  },
+  methods: {
+    // content填充
+    putContent(row) {
+      return '由于格式显示，省略内容，请点击查看按钮查看详细内容'
+    },
+    // 获取全部资讯
+    fetchNewsList() {
+      getEmplNews().then(({ data }) => {
+        this.tableData = data.data;
+      })
+    },
+    // 查找
+    getSearchList() {
+      if (this.searchForm.keyword == '') {
+        this.$message.error('请输入关键字');
+        return;
+      }
+      getEmplNewsBySearch({ params: this.searchForm }).then(({ data }) => {
+        this.tableData = data.data;
+        this.$message.success('共搜索到' + this.tableData.length + '条结果');
+      })
+    },
+    // 取消时重置表单
+    cancel() {
+      this.$refs.form.resetFields();
+      this.dialogVisible = false;
+    },
+    // 查看
+    viewNews(row) {
+      this.newsDetail = row;
+      this.drawer = true;
+    },
+    // 新增
+    handleAdd() {
+      this.modalType = 0;
+      initEditor("");
+      this.form.newsId = Date.now();;
+      this.dialogVisible = true;
+    },
+    // 编辑
+    handleEdit(row) {
+      this.modalType = 1;
+      initEditor(row.content);
+      this.form = JSON.parse(JSON.stringify(row));    // 深拷贝全部
+      this.dialogVisible = true;
+    },
+    // 删除
+    handleDelete(row) {
+      this.$confirm('确定要删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteEmplNews(row.newsId).then(() => {
+          this.$message.success('删除成功');
+          this.fetchNewsList();
+        })
+      }).catch(() => {
+        this.$message.info('已取消删除');
+      })
+    },
+    // 查找按钮
+    onSubmit() {
+      this.getSearchList();
+    },
+    // 返回
+    backList() {
+      this.fetchNewsList()
+      this.$message.success('已返回原列表');
+    },
+    submitNewNews() {
+      this.form.content = editor.txt.html();
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 提交表单的逻辑
+          if (this.modalType === 0) {
+            // 添加操作
+            addEmplNews(this.form).then((response) => {
+              if (response.data.code === 20000) {
+                this.fetchNewsList();
+                this.$message.success('添加成功');
+                this.$refs.form.resetFields();
+                this.dialogVisible = false;
+              } else {
+                this.$message.warning('添加失败，已存在');
+              }
+
+            })
+          } else {
+            // 编辑操作
+            editEmplNews(this.form).then(() => {
+              this.fetchNewsList();
+              this.$message.success('更新成功');
+              this.$refs.form.resetFields();
+              this.dialogVisible = false;
+            })
+          }
+        } else {
+          this.$message.error('表单验证失败');
+        }
+      });
+
+    }
+  },
+  created() {
+    editor = '' // 解决切换页面富文本失效问题
+    this.fetchNewsList();
+  }
 }  
-</script>  
-  
+</script>
+
 <style lang="less" scoped>
 .el-button {
-    border: 2px solid #eeeeee;
-    border-radius: 8px;
+  border: 2px solid #eeeeee;
+  border-radius: 8px;
 
-    &:hover {
-        color: #ccc;
-    }
+  &:hover {
+    color: #ccc;
+  }
 }
 
 .el-button--primary {
-    color: #fff;
-    background-color: #aadd99;
+  color: #fff;
+  background-color: #aadd99;
 
-    &:hover {
-        background-color: #99cc88;
-    }
-} 
-.news-item {  
-  margin-bottom: 20px;  
-  padding: 10px;  
-  border: 1px solid #ddd;  
-  border-radius: 4px;  
-}  
+  &:hover {
+    background-color: #99cc88;
+  }
+}
+
+.el-container {
+  height: 400px;
+  display: block;
+
+  .el-header {
+    height: 80px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .el-main {
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+}
 </style>

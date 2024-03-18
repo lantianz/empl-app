@@ -23,7 +23,7 @@ import store from "@/store";
 export default {
     data() {
         return {
-            
+
         }
     },
     components: {
@@ -31,8 +31,8 @@ export default {
         CommonHeader
     },
     updated() {
-    store.commit("checkCondition")
-  }
+        store.commit("checkCondition")
+    }
 }
 </script>
 <style scoped>

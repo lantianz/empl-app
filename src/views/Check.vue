@@ -91,10 +91,12 @@ export default {
         font-size: 18px;
     }
 }
+
 .el-main {
     background-color: #fff;
     border-radius: 8px;
 }
+
 .dialog-footer {
     text-align: right;
 }

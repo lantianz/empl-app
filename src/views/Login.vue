@@ -96,6 +96,7 @@ export default {
         background-color: #99cc88;
     }
 }
+
 .header-container {
     text-align: center;
     margin-top: 60px;
@@ -109,6 +110,7 @@ export default {
 .main-container {
     display: flex;
     margin: 80px auto;
+
     .login {
         width: 350px;
         margin: auto;
