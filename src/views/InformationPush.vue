@@ -15,16 +15,28 @@
       </el-form>
     </div>
     <div class="el-main">
-      <el-table stripe border :data="tableData" show-overflow-tooltip="true" height="450" style="width: 100%">
+      <el-table stripe border :data="tableData" height="450" style="width: 100%"
+        :default-sort="{ prop: 'sendTime', order: 'descending' }">
         <el-table-column type="index" width="50px" label="">
         </el-table-column>
-        <el-table-column prop="newsId" width="120px" sortable label="资讯ID">
+        <el-table-column prop="newsId" width="105px" sortable label="资讯ID">
         </el-table-column>
         <el-table-column prop="title" label="标题">
         </el-table-column>
         <el-table-column prop="author" width="120px" label="作者">
         </el-table-column>
-        <el-table-column prop="sendTime" width="145px" label="最后更新时间">
+        <el-table-column width="130px" label="封面">
+          <template slot-scope="scope">
+            <el-image style="width: 108px; height: 64px; border-radius: 5px;"
+              :src="'/api/api/files/download/' + scope.row.frontImg"
+              :preview-src-list="['/api/api/files/download/' + scope.row.frontImg]">
+              <div slot="error" class="image-slot">
+                <span>无封面数据</span>
+              </div>
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column prop="sendTime" width="145px" sortable label="最后更新时间">
         </el-table-column>
         <el-table-column prop="" label="内容" :formatter="putContent">
         </el-table-column>
@@ -49,6 +61,11 @@
         </el-form-item>
         <el-form-item label="作者" prop="author">
           <el-input v-model="form.author" id="author" style="width:150px;"></el-input>
+        </el-form-item>
+        <el-form-item label="封面" prop="frontImg">
+          <el-upload ref="img-upload" action="/api/api/files/upload" :on-success="successUpload">
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
         </el-form-item>
         <el-form-item label="内容" prop="content" style="width:95%;">
           <div id="editor"></div>
@@ -99,6 +116,7 @@ export default {
         newsId: '',
         title: '',
         author: '',
+        frontImg: '',
         content: ''
       },
       rules: {
@@ -124,6 +142,9 @@ export default {
     fetchNewsList() {
       getEmplNews().then(({ data }) => {
         this.tableData = data.data;
+        this.tableData.forEach(item => {
+          item.newsId = Number(item.newsId);
+        })
       })
     },
     // 查找
@@ -134,6 +155,9 @@ export default {
       }
       getEmplNewsBySearch({ params: this.searchForm }).then(({ data }) => {
         this.tableData = data.data;
+        this.tableData.forEach(item => {
+          item.newsId = Number(item.newsId);
+        })
         this.$message.success('共搜索到' + this.tableData.length + '条结果');
       })
     },
@@ -151,8 +175,9 @@ export default {
     handleAdd() {
       this.modalType = 0;
       initEditor("");
-      this.form.newsId = Date.now();;
+      this.form.newsId = parseInt(new Date().getTime() / 1000) + '';
       this.dialogVisible = true;
+      this.$refs['img-upload'].clearFiles();
     },
     // 编辑
     handleEdit(row) {
@@ -160,6 +185,12 @@ export default {
       initEditor(row.content);
       this.form = JSON.parse(JSON.stringify(row));    // 深拷贝全部
       this.dialogVisible = true;
+      this.$refs['img-upload'].clearFiles();
+    },
+    // 封面上传钩子
+    successUpload(res) {
+      // 存储的是图片的时间戳前缀
+      this.form.frontImg = res.data;
     },
     // 删除
     handleDelete(row) {

@@ -159,7 +159,9 @@ export default {
             // 表单验证规则
             rules: {
                 studentId: [
-                    { required: true, message: '请输入学号' }
+                    { required: true, message: '请输入学号' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '学号限制大小写字母数字'},
+                    { min: 6, message: '学号至少6位'}
                 ],
                 companyName: [
                     { required: true, message: '请输入单位全称' }

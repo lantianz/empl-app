@@ -35,10 +35,13 @@ export default {
             },
             rules: {
                 username: [
-                    { required: true, message: '请输入用户名', trigger: 'blur' }
+                    { required: true, message: '请输入账号', trigger: 'blur' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '账号限制大小写字母数字'},
+                    { min: 6, message: '账号至少6位'}
                 ],
                 password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' }
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                    { min: 6, message: '密码至少6位'}
                 ]
             }
         };

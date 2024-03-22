@@ -140,7 +140,9 @@ export default {
             // 表单验证规则
             rules: {
                 studentId: [
-                    { required: true, message: '请输入学号' }
+                    { required: true, message: '请输入学号' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '学号限制大小写字母数字'},
+                    { min: 6, message: '学号至少6位'}
                 ],
                 name: [
                     { required: true, message: '请输入姓名' }
@@ -158,10 +160,13 @@ export default {
                     { required: true, message: '请选择年级' }
                 ],
                 username: [
-                    { required: false, message: '请输入账号' }
+                    { required: false, message: '请输入账号' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '账号限制大小写字母数字'},
+                    { min: 6, message: '账号至少6位'}
                 ],
                 password: [
-                    { required: false, message: '请输入密码' }
+                    { required: false, message: '请输入密码' },
+                    { min: 6, message: '密码至少6位'}
                 ]
             },
             tableData: [],

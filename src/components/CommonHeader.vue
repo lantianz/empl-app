@@ -56,13 +56,13 @@ export default {
             },
             rules: {
                 oldPwd: [
-                    { required: true, message: '请输入当前密码' }
+                    { required: true, message: '密码不能为空'},{ min: 6, message: '密码至少6位'}
                 ],
                 newPwd: [
-                    { required: true, message: '请输入新密码' }
+                    { required: true, message: '密码不能为空'},{ min: 6, message: '密码至少6位'}
                 ],
                 password: [
-                    { required: true, message: '请确认新密码' }
+                    { required: true, message: '密码不能为空'},{ min: 6, message: '密码至少6位'}
                 ]
             }
         }

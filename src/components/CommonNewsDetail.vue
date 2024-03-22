@@ -35,11 +35,12 @@ export default {
 
 <style lang="less" scoped>
 .news-detail {
-    padding: 20px;
+    padding: 10px;
 
     .title {
         font-size: 24px;
         color: #050505;
+        margin: 0;
     }
 
     .author {

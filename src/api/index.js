@@ -104,6 +104,20 @@ export const editEmplNews = (params) => {
     return http.put('/api/emplNews/editEmplNews', params);
 }
 
+// Check...
+export const getCheck = (params) => {
+    return http.get('/api/emplInfoCheck/all', params);
+}
+export const addCheck = (data) => {
+    return http.post('/api/emplInfoCheck/add', data);
+}
+export const deleteCheck = (id) => {
+    return http.delete(`/api/emplInfoCheck/delete/${id}`);
+}
+export const editCheck = (data) => {
+    return http.put('/api/emplInfoCheck/edit', data);
+}
+
 // 汇总与统计分页
 export const getTotalTableByPage = (params) => {
     return http.get('/api/emplInfo/totalByPage', params);

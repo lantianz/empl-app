@@ -105,22 +105,29 @@ export default {
             // 表单验证规则
             rules: {
                 jobId: [
-                    { required: true, message: '请输入工号' }
+                    { required: true, message: '请输入工号' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '工号限制大小写字母数字'},
+                    { min: 6, message: '工号至少6位'}
                 ],
                 name: [
                     { required: true, message: '请输入姓名' }
                 ],
                 phone: [
-                    { required: false, message: '请输入电话' }
+                    { required: false, message: '请输入电话' },
+                    { pattern: /^1[3456789]\d{9}$/, message: '电话格式有误'},
                 ],
                 email: [
-                    { required: false, message: '请输入邮箱' }
+                    { required: false, message: '请输入邮箱' },
+                    { pattern: /^([a-zA-Z0-9]+[|-|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[|-|.]?)*[a-zA-Z0-9]+(.[a-zA-Z]{2,3})+$/, message: '邮箱格式有误'},
                 ],
                 username: [
-                    { required: true, message: '请输入账号' }
+                    { required: true, message: '请输入账号' },
+                    { pattern: /^[a-zA-Z0-9]+$/, message: '账号限制大小写字母数字'},
+                    { min: 6, message: '账号至少6位'}
                 ],
                 password: [
-                    { required: false, message: '请输入密码' }
+                    { required: false, message: '请输入密码' },
+                    { min: 6, message: '密码至少6位'}
                 ]
             },
             tableData: [],
