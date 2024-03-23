@@ -88,7 +88,7 @@ export default {
                 if (this.ideaForm.ideaComment) {
                     this.info.ideaComment = "已拒绝，未说明原因";
                 } else {
-                    this.info.ideaComment = this.ideaForm.ideaComment;
+                    this.info.ideaComment = "已拒绝，原因；" + this.ideaForm.ideaComment;
                 }
                 this.info.status = 'rejected';
                 editCheck(this.info).then(res => {
