@@ -33,7 +33,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column width="150px" label="操作">
-                    <template slot-scope="scope">
+                    <template v-if="scope.row.status === 'waiting'" slot-scope="scope">
                         <el-button @click="idea(scope.row, 'approve')" type="success" size="mini">通过</el-button>
                         <el-button @click="idea(scope.row, 'reject')" type="danger" size="mini">拒绝</el-button>
                     </template>
@@ -85,7 +85,11 @@ export default {
         },
         submit() {
             if (this.modalType === 0) {
-                this.info.ideaComment = this.ideaForm.ideaComment;
+                if (this.ideaForm.ideaComment) {
+                    this.info.ideaComment = "已拒绝，未说明原因";
+                } else {
+                    this.info.ideaComment = this.ideaForm.ideaComment;
+                }
                 this.info.status = 'rejected';
                 editCheck(this.info).then(res => {
                     this.$message.success('已拒绝');
