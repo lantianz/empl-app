@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="login_background">
         <div class="header-container">
             <span>毕业生就业信息管理系统</span>
         </div>
@@ -100,6 +100,14 @@ export default {
     }
 }
 
+.login_background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url('../assets/images/login_background.png');
+    background-size: cover;
+}
+
 .header-container {
     text-align: center;
     margin-top: 60px;
@@ -120,6 +128,7 @@ export default {
         padding: 35px 15px 15px 15px;
         border-radius: 15px;
         background-color: #fff;
+        opacity: 0.75;
         box-shadow: 0 0 25px #ddd;
         box-sizing: border-box;
 
