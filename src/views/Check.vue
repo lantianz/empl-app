@@ -85,10 +85,10 @@ export default {
         },
         submit() {
             if (this.modalType === 0) {
-                if (this.ideaForm.ideaComment) {
+                if (this.ideaForm.ideaComment === null || this.ideaForm.ideaComment === '') {
                     this.info.ideaComment = "已拒绝，未说明原因";
                 } else {
-                    this.info.ideaComment = "已拒绝，原因；" + this.ideaForm.ideaComment;
+                    this.info.ideaComment = "已拒绝，原因：" + this.ideaForm.ideaComment;
                 }
                 this.info.status = 'rejected';
                 editCheck(this.info).then(res => {
