@@ -86,7 +86,7 @@ export default {
                     'https://www.bilibili.com',
                     'https://sso-443.webvpn.gxnu.edu.cn',
                     'http://www.dean.gxnu.edu.cn/',
-                    'https://co2.cnki.net/'],
+                    'http://gxnu.co.cnki.net'],
                 name: ['百度',
                     '哔哩哔哩',
                     '广西师大WebVPN',
