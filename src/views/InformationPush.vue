@@ -77,7 +77,7 @@
       </el-form>
     </el-dialog>
     <!-- 右抽屉显示资讯内容 -->
-    <el-drawer title="资讯展示" :visible.sync="drawer" size="100%">
+    <el-drawer title="资讯展示" :visible.sync="drawer" size="50%">
       <div>
         <common-news-detail :newsData="newsDetail"></common-news-detail>
       </div>
