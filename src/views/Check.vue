@@ -4,6 +4,7 @@
             <h1>院系就业工作负责人审核</h1>
         </el-header>
         <el-main>
+            <!-- 审核信息表格 -->
             <el-table stripe border :data="tableData" style="width: 100%"
                 :default-sort="{ prop: 'status', order: 'descending' }">
                 <el-table-column type="index" width="30px" label="">
@@ -39,7 +40,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-
             <!-- 审核意见表单 -->
             <el-dialog title="意见确认" :visible.sync="ideaDialogVisible" width="300px">
                 <el-form v-if="modalType === 0" :model="ideaForm" ref="ideaForm" label-width="120px">

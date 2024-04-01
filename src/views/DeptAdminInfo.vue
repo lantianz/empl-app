@@ -1,6 +1,6 @@
 <template>
     <div class="manage">
-        <el-dialog style="color: #aadd99;" title="添加院系负责人" :visible.sync="dialogVisible" width="500px"
+        <el-dialog style="color: #aadd99;" :title="modalType === 0? '添加院系负责人': '编辑院系负责人'" :visible.sync="dialogVisible" width="500px"
             :before-close="handleClose">
             <!-- 用户表单信息 -->
             <el-form class="form-user" ref="form" :rules="rules" :inline="true" :model="form" label-width="140px">

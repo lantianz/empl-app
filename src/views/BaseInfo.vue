@@ -1,6 +1,6 @@
 <template>
     <div class="manage">
-        <el-dialog style="color: #aadd99;" title="新增" :visible.sync="dialogVisible" width="700px"
+        <el-dialog style="color: #aadd99;" :title="modalType === 0? '新增': '编辑'" :visible.sync="dialogVisible" width="700px"
             :before-close="handleClose">
             <!-- 用户表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">

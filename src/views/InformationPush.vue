@@ -15,6 +15,7 @@
       </el-form>
     </div>
     <div class="el-main">
+      <!-- 就业相关资讯表格 -->
       <el-table stripe border :data="tableData" height="450" style="width: 100%"
         :default-sort="{ prop: 'sendTime', order: 'descending' }">
         <el-table-column type="index" width="50px" label="">
@@ -51,7 +52,7 @@
       <span style="color: #999999; font-size: 14px;">共{{ tableData.length }}条数据</span>
     </div>
     <!-- 编辑资讯内容对话框 -->
-    <el-dialog :visible.sync="dialogVisible" title="新增就业资讯" width="75%">
+    <el-dialog :visible.sync="dialogVisible" :title="modalType === 0? '新增就业资讯': '编辑就业资讯'" width="75%">
       <el-form ref="form" :rules="rules" :model="form" label-width="100px">
         <el-form-item label="资讯ID" prop="newsId">
           <el-input v-model="form.newsId" id="newsId" disabled style="width:300px;"></el-input>
