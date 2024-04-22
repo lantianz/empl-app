@@ -31,22 +31,37 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="19">
+                <el-col :span="4" style="padding-right: 10px;">
+                    <div class="c-content">
+                        <span>总签约人数：
+                            <span>{{ allSignPerson }}</span>
+                        </span>
+                        <span>总毕业人数：
+                            <span>{{ allGraduatePerson }}</span>
+                        </span>
+                        <span>签约率：
+                            <span>{{ signRate }}</span>
+                        </span>
+                    </div>
+                </el-col>
+                <el-col :span="15">
                     <div class="r-content">
                         <el-table stripe border height="90%" :data="tableData" style="width: 100%;"
                             :default-sort="{ prop: 'companyType' }">
                             <el-table-column type="index" width="80px" label="本页序号">
                             </el-table-column>
-                            <el-table-column prop="companyType" width="130px" sortable label="就业单位类别">
+                            <el-table-column prop="companyType" sortable label="就业单位类别">
                             </el-table-column>
-                            <el-table-column prop="countOfThisTypeEmpl" sortable label="该类别本院系就业人数">
+                            <el-table-column prop="countOfThisTypeEmpl" sortable label="签约人数">
                             </el-table-column>
-                            <el-table-column prop="allInDeptRate" sortable label="占全类别百分比(本院)">
+                            <el-table-column prop="allInDeptRate" sortable label="占总签约人数百分比">
                             </el-table-column>
-                            <el-table-column prop="countOfAllTypeEmpl" sortable label="该类别全院系合计人数">
+                            <!-- 
+                            <el-table-column prop="countOfAllTypeEmpl" sortable label="总签约人数">
                             </el-table-column>
-                            <el-table-column prop="allInAllDeptRate" sortable label="占全类别百分比(全院)">
+                            <el-table-column prop="allInAllDeptRate" sortable label="占总毕业人数百分比">
                             </el-table-column>
+                             -->
                         </el-table>
                         <div class="pager">
                             <span v-if="tip">当前显示的是 {{ tip }} 就业信息</span>
@@ -92,6 +107,12 @@ export default {
                     { required: true, message: '请选择院系' }
                 ]
             },
+            // 已签约总人数
+            allSignPerson: '',
+            // 总毕业生人数
+            allGraduatePerson: '',
+            // 占百分比
+            signRate: '',
             // 筛选后的院系列表
             departmentList: [],
             tableData: [],
@@ -137,7 +158,7 @@ export default {
                 // 小数转百分数
                 this.tableData.forEach(item => {
                     item.allInDeptRate = Number(item.allInDeptRate * 100).toFixed(1) + '%';
-                    item.allInAllDeptRate = Number(item.allInAllDeptRate * 100).toFixed(1) + '%';
+                    item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
                 })
             })
         },
@@ -151,8 +172,12 @@ export default {
                 // 小数转百分数
                 this.tableData.forEach(item => {
                     item.allInDeptRate = Number(item.allInDeptRate * 100).toFixed(1) + '%';
-                    item.allInAllDeptRate = Number(item.allInAllDeptRate * 100).toFixed(1) + '%';
+                    item.employmentRate = Number(item.employmentRate * 100).toFixed(1) + '%';
                 })
+                this.allSignPerson = this.tableData[0].countOfEmployed;
+                this.allGraduatePerson = this.tableData[0].countOfGraduate;
+                this.signRate = this.tableData[0].employmentRate;
+
                 this.total = data.total;
             })
         },
@@ -198,7 +223,7 @@ export default {
         },
         // 确定年级
         gradeConfirm() {
-            this.getAllTotalTableBypageList();
+            //this.getAllTotalTableBypageList();
             this.tip = this.tip + this.dept.grade + '级';
         }
     },
@@ -268,6 +293,29 @@ export default {
                 ::v-deep .el-form-item__content {
                     display: flex;
                     flex-direction: column;
+                }
+            }
+        }
+
+        .c-content {
+            background-color: #fff;
+            height: 100%;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            span {
+                font-size: 16px;
+                font-weight: 600;
+                color: #909399;
+                margin-top: 20px;
+
+                span {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #515356;
+                    margin-left: 10px;
                 }
             }
         }
