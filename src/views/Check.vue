@@ -5,9 +5,9 @@
         </el-header>
         <el-main>
             <!-- 审核信息表格 -->
-            <el-table stripe border :data="tableData" style="width: 100%"
+            <el-table stripe border :data="tableData" height="500" style="width: 100%"
                 :default-sort="{ prop: 'status', order: 'descending' }">
-                <el-table-column type="index" width="30px" label="">
+                <el-table-column type="index" label="">
                 </el-table-column>
                 <el-table-column prop="studentId" width="120px" sortable label="学号">
                 </el-table-column>
@@ -40,6 +40,7 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <span style="color: #999999; font-size: 14px;">共{{ tableData.length }}条数据</span>
             <!-- 审核意见表单 -->
             <el-dialog title="意见确认" :visible.sync="ideaDialogVisible" width="300px">
                 <el-form v-if="modalType === 0" :model="ideaForm" ref="ideaForm" label-width="120px">
